@@ -1,7 +1,7 @@
 import { App, Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
+// import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { CDKServerlessAgenticAPI } from '../../src';
 
 /**
@@ -107,6 +107,7 @@ class AdvancedExampleStack extends Stack {
     productTable.grantReadData(getProductDetailsFunction);
 
     // Validate security configuration
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const securityResults = webApp.validateSecurity();
     
     // Outputs

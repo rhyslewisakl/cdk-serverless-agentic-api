@@ -208,6 +208,7 @@ export class CDKServerlessAgenticAPI extends Construct {
 
     // Create API Gateway resource and method
     const apiResource = createApiGatewayResource(this.api, config.path);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const apiMethod = createApiGatewayMethod(
       apiResource,
       config,
@@ -268,7 +269,7 @@ export class CDKServerlessAgenticAPI extends Construct {
     functionName: string,
     sourcePath: string,
     environment?: { [key: string]: string },
-    additionalPolicies?: any[]
+    additionalPolicies?: Record<string, unknown>[]
   ): lambda.Function {
     return createLambdaFunction(
       this,

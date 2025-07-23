@@ -9,11 +9,11 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
-import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
-import * as logs from 'aws-cdk-lib/aws-logs';
-import * as sqs from 'aws-cdk-lib/aws-sqs';
-import * as kms from 'aws-cdk-lib/aws-kms';
-import { Duration, RemovalPolicy } from 'aws-cdk-lib';
+// import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
+// import * as logs from 'aws-cdk-lib/aws-logs';
+// import * as sqs from 'aws-cdk-lib/aws-sqs';
+// import * as kms from 'aws-cdk-lib/aws-kms';
+// import { Duration } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 /**
@@ -33,7 +33,7 @@ export interface SecurityValidationResult {
   /**
    * Detailed information about the validation
    */
-  details?: any;
+  details?: Record<string, unknown>;
 }
 
 /**
@@ -129,7 +129,7 @@ export function validateIamPolicyLeastPrivilege(
       // Access statements through toJSON() since statements is private
       const policyJson = (policy as iam.Policy).document.toJSON();
       if (policyJson.Statement) {
-        policyStatements.push(...policyJson.Statement.map((s: any) => iam.PolicyStatement.fromJson(s)));
+        policyStatements.push(...policyJson.Statement.map((s: Record<string, unknown>) => iam.PolicyStatement.fromJson(s)));
       }
     });
   

@@ -152,5 +152,5 @@ export interface LambdaFunctionOptions {
   /**
    * Additional IAM policy statements to attach to the Lambda execution role
    */
-  readonly additionalPolicies?: any[]; // Using any[] to avoid importing iam types in types file
+  readonly additionalPolicies?: Record<string, unknown>[]; // Using Record<string, unknown>[] to avoid importing iam types in types file
 }

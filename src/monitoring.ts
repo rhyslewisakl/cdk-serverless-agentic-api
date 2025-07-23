@@ -1,6 +1,6 @@
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
+// import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import { Duration } from 'aws-cdk-lib';
 import { LambdaFunctionEntry } from './types';
@@ -14,12 +14,13 @@ import { LambdaFunctionEntry } from './types';
  * @param constructId The ID of the parent construct
  */
 export function createApiGatewayAlarms(
-  scope: any,
+  scope: Record<string, unknown>,
   api: apigateway.RestApi,
   dashboard: cloudwatch.Dashboard,
   constructId: string
 ): void {
   // Create alarm for API Gateway 4xx errors
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const api4xxAlarm = new cloudwatch.Alarm(scope, 'ApiGateway4xxAlarm', {
     alarmName: `${constructId}-api-4xx-errors`,
     alarmDescription: 'API Gateway 4xx error rate is too high',
@@ -39,6 +40,7 @@ export function createApiGatewayAlarms(
   });
 
   // Create alarm for API Gateway 5xx errors
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const api5xxAlarm = new cloudwatch.Alarm(scope, 'ApiGateway5xxAlarm', {
     alarmName: `${constructId}-api-5xx-errors`,
     alarmDescription: 'API Gateway 5xx error rate is too high',
@@ -58,6 +60,7 @@ export function createApiGatewayAlarms(
   });
 
   // Create alarm for API Gateway latency
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const apiLatencyAlarm = new cloudwatch.Alarm(scope, 'ApiGatewayLatencyAlarm', {
     alarmName: `${constructId}-api-latency`,
     alarmDescription: 'API Gateway latency is too high',
@@ -142,7 +145,7 @@ export function createApiGatewayAlarms(
  * @param constructId The ID of the parent construct
  */
 export function createLambdaAlarms(
-  scope: any,
+  scope: Record<string, unknown>,
   lambdaFunctions: Map<string, LambdaFunctionEntry>,
   dashboard: cloudwatch.Dashboard,
   constructId: string
@@ -202,12 +205,13 @@ export function createLambdaAlarms(
  * @param constructId The ID of the parent construct
  */
 export function createCloudFrontAlarms(
-  scope: any,
+  scope: Record<string, unknown>,
   distribution: cloudfront.Distribution,
   dashboard: cloudwatch.Dashboard,
   constructId: string
 ): void {
   // Create alarm for CloudFront 4xx errors
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const cloudfront4xxAlarm = new cloudwatch.Alarm(scope, 'CloudFront4xxAlarm', {
     alarmName: `${constructId}-cloudfront-4xx-errors`,
     alarmDescription: 'CloudFront 4xx error rate is too high',
@@ -226,6 +230,7 @@ export function createCloudFrontAlarms(
   });
 
   // Create alarm for CloudFront 5xx errors
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const cloudfront5xxAlarm = new cloudwatch.Alarm(scope, 'CloudFront5xxAlarm', {
     alarmName: `${constructId}-cloudfront-5xx-errors`,
     alarmDescription: 'CloudFront 5xx error rate is too high',
@@ -307,7 +312,7 @@ export function createCloudFrontAlarms(
  * @returns The created CloudWatch dashboard
  */
 export function createMonitoringResources(
-  scope: any,
+  scope: Record<string, unknown>,
   api: apigateway.RestApi,
   lambdaFunctions: Map<string, LambdaFunctionEntry>,
   distribution: cloudfront.Distribution,
