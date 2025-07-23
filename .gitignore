@@ -5,16 +5,27 @@ yarn-debug.log*
 yarn-error.log*
 
 # Build outputs
-lib/
+# Keep lib/index.js and lib/index.d.ts for package functionality
+/lib/*
+!/lib/index.js
+!/lib/index.d.ts
+
 dist/
 *.tsbuildinfo
 .jsii
 *.js.map
 *.d.ts.map
-*.d.ts
+
+# Exclude JavaScript files except in lib directory
 test/**/*.js
 examples/**/*.js
-src/*.js
+src/**/*.js
+
+# Exclude TypeScript declaration files except in lib directory
+*.d.ts
+!/lib/*.d.ts
+
+# Error logs
 errors.txt
 lint_errors.txt
 

@@ -144,12 +144,12 @@ export function createApiGatewayAlarms(
  */
 export function createLambdaAlarms(
   scope: Construct,
-  lambdaFunctions: Map<string, LambdaFunctionEntry>,
+  lambdaFunctions: Record<string, LambdaFunctionEntry>,
   dashboard: cloudwatch.Dashboard,
   constructId: string
 ): void {
   // Create alarms for each Lambda function
-  lambdaFunctions.forEach((entry, path) => {
+  Object.entries(lambdaFunctions).forEach(([path, entry]) => {
     // Generate a safe alarm ID from the path
     const safePath = path.replace(/[^a-zA-Z0-9]/g, '');
     const alarmIdPrefix = `Lambda${safePath}`;
@@ -310,7 +310,7 @@ export function createCloudFrontAlarms(
 export function createMonitoringResources(
   scope: Construct,
   api: apigateway.RestApi,
-  lambdaFunctions: Map<string, LambdaFunctionEntry>,
+  lambdaFunctions: Record<string, LambdaFunctionEntry>,
   distribution: cloudfront.Distribution,
   constructId: string
 ): cloudwatch.Dashboard {

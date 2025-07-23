@@ -23,17 +23,17 @@ export interface SecurityValidationResult {
   /**
    * Whether the validation passed
    */
-  passed: boolean;
+  readonly passed: boolean;
   
   /**
    * Message describing the validation result
    */
-  message: string;
+  readonly message: string;
   
   /**
    * Detailed information about the validation
    */
-  details?: Record<string, any>;
+  readonly details?: Record<string, any>;
 }
 
 /**
@@ -44,13 +44,13 @@ export interface SecurityValidationOptions {
    * Whether to throw an error when validation fails
    * @default false
    */
-  throwOnFailure?: boolean;
+  readonly throwOnFailure?: boolean;
   
   /**
    * Whether to log validation results
    * @default true
    */
-  logResults?: boolean;
+  readonly logResults?: boolean;
 }
 
 /**

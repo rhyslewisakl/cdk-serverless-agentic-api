@@ -1,6 +1,6 @@
 {
   "name": "cdk-serverless-agentic-api",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "CDK construct for serverless web applications with CloudFront, S3, Cognito, API Gateway, and Lambda",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -8,7 +8,7 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.json && jsii",
+    "build": "rm -rf lib/ dist/ && tsc --project tsconfig.json && cp src/index.ts lib/index.ts && jsii --silence-warnings=reserved-word",
     "watch": "jsii -w",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -58,10 +58,16 @@
     "constructs": "^10.4.0"
   },
   "files": [
-    "lib/**/*"
+    "lib/**/*",
+    "dist/**/*",
+    "LICENSE",
+    "README.md",
+    "package.json",
+    "jsii.json"
   ],
   "jsii": {
     "outdir": "dist",
+    "projectReferences": false,
     "targets": {
       "python": {
         "distName": "cdk-serverless-agentic-api",
@@ -77,6 +83,9 @@
       "dotnet": {
         "namespace": "NZRhysLewis.CdkServerlessAgenticApi",
         "packageId": "NZRhysLewis.CdkServerlessAgenticApi"
+      },
+      "tsc": {
+        "outDir": "lib"
       }
     }
   },

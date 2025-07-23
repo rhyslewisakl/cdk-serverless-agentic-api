@@ -68,14 +68,14 @@ export class CDKServerlessAgenticAPI extends Construct {
   public readonly cognitoAuthorizer: apigateway.CfnAuthorizer;
 
   /**
-   * Map of Lambda functions indexed by their resource path
+   * Registry of Lambda functions indexed by their resource path
    */
-  public readonly lambdaFunctions: Map<string, LambdaFunctionEntry>;
+  public readonly lambdaFunctions: Record<string, LambdaFunctionEntry>;
 
   /**
    * Internal registry of resource configurations
    */
-  private readonly resourceConfigs: Map<string, ResourceConfig>;
+  private readonly resourceConfigs: Record<string, ResourceConfig>;
 
   /**
    * Creates a new CDKServerlessAgenticAPI
@@ -88,8 +88,8 @@ export class CDKServerlessAgenticAPI extends Construct {
     super(scope, id);
 
     // Initialize internal state
-    this.lambdaFunctions = new Map<string, LambdaFunctionEntry>();
-    this.resourceConfigs = new Map<string, ResourceConfig>();
+    this.lambdaFunctions = {};
+    this.resourceConfigs = {};
 
     // Validate props
     if (props?.domainName && !props?.certificateArn) {
@@ -210,7 +210,7 @@ export class CDKServerlessAgenticAPI extends Construct {
 
     // Store configuration for later implementation
     const resourceKey = `${config.method}:${config.path}`;
-    this.resourceConfigs.set(resourceKey, config);
+    this.resourceConfigs[resourceKey] = config;
 
     // Create Lambda function for this resource
     const lambdaFunction = createApiLambdaFunction(
@@ -240,7 +240,7 @@ export class CDKServerlessAgenticAPI extends Construct {
       config: config
     };
 
-    this.lambdaFunctions.set(config.path, lambdaEntry);
+    this.lambdaFunctions[config.path] = lambdaEntry;
     
     return lambdaFunction;
   }
