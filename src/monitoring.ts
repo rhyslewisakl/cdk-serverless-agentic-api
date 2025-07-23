@@ -2,6 +2,7 @@ import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 // import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import { Construct } from 'constructs';
 import { Duration } from 'aws-cdk-lib';
 import { LambdaFunctionEntry } from './types';
 

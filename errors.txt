@@ -21,10 +21,6 @@ src/monitoring.ts:310:10 - error TS2304: Cannot find name 'Construct'.
 
 310   scope: Construct,
              ~~~~~~~~~
-test/cdk-serverless-agentic-api.test.ts:14:7 - error TS6133: 'template' is declared but its value is never read.
-
-14   let template: Template;
-         ~~~~~~~~
 test/integration/construct-deployment.integration.test.ts:57:11 - error TS6133: 'construct' is declared but its value is never read.
 
 57     const construct = new CDKServerlessAgenticAPI(stack, 'CustomDomainTestConstruct', {
@@ -117,7 +113,3 @@ test/security-best-practices.test.ts:80:14 - error TS18048: 'result.details' is 
 
 80       expect(result.details.userPoolId).toBe(construct.userPool.userPoolId);
                 ~~~~~~~~~~~~~~
-test/serverless-web-app-construct.test.ts:14:7 - error TS6133: 'template' is declared but its value is never read.
-
-14   let template: Template;
-         ~~~~~~~~

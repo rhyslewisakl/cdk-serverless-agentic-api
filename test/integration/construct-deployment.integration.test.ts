@@ -53,7 +53,6 @@ describe('Construct Deployment Integration', () => {
     // Create a test stack and construct with custom domain
     const app = new App();
     const stack = new Stack(app, 'CustomDomainTestStack');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const construct = new CDKServerlessAgenticAPI(stack, 'CustomDomainTestConstruct', {
       domainName: 'example.com',
       certificateArn: 'arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012'
@@ -63,6 +62,7 @@ describe('Construct Deployment Integration', () => {
     const template = Template.fromStack(stack);
     
     // Verify custom domain configuration
+    expect(construct.distribution).toBeDefined();
     template.hasResourceProperties('AWS::CloudFront::Distribution', {
       DistributionConfig: {
         Aliases: ['example.com']
@@ -80,7 +80,6 @@ describe('Construct Deployment Integration', () => {
     // Create a test stack and construct with logging enabled
     const app = new App();
     const stack = new Stack(app, 'LoggingTestStack');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const construct = new CDKServerlessAgenticAPI(stack, 'LoggingTestConstruct', {
       enableLogging: true
     });
@@ -89,6 +88,7 @@ describe('Construct Deployment Integration', () => {
     const template = Template.fromStack(stack);
     
     // Verify logging configuration
+    expect(construct.distribution).toBeDefined();
     const cfDistributions = template.findResources('AWS::CloudFront::Distribution');
     const distribution = Object.values(cfDistributions)[0];
     expect(distribution.Properties.DistributionConfig.Logging).toBeDefined();
