@@ -21,17 +21,17 @@ src/monitoring.ts:310:10 - error TS2304: Cannot find name 'Construct'.
 
 310   scope: Construct,
              ~~~~~~~~~
-test/cdk-serverless-agentic-api.test.ts:13:7 - error TS6133: 'template' is declared but its value is never read.
+test/cdk-serverless-agentic-api.test.ts:14:7 - error TS6133: 'template' is declared but its value is never read.
 
-13   let template: Template; // Used in tests
+14   let template: Template;
          ~~~~~~~~
-test/integration/construct-deployment.integration.test.ts:56:11 - error TS6133: 'construct' is declared but its value is never read.
+test/integration/construct-deployment.integration.test.ts:57:11 - error TS6133: 'construct' is declared but its value is never read.
 
-56     const construct = new CDKServerlessAgenticAPI(stack, 'CustomDomainTestConstruct', {
+57     const construct = new CDKServerlessAgenticAPI(stack, 'CustomDomainTestConstruct', {
              ~~~~~~~~~
-test/integration/construct-deployment.integration.test.ts:82:11 - error TS6133: 'construct' is declared but its value is never read.
+test/integration/construct-deployment.integration.test.ts:84:11 - error TS6133: 'construct' is declared but its value is never read.
 
-82     const construct = new CDKServerlessAgenticAPI(stack, 'LoggingTestConstruct', {
+84     const construct = new CDKServerlessAgenticAPI(stack, 'LoggingTestConstruct', {
              ~~~~~~~~~
 test/lambda/error-handling.test.ts:21:9 - error TS6133: 'healthHandler' is declared but its value is never read.
 
@@ -117,75 +117,7 @@ test/security-best-practices.test.ts:80:14 - error TS18048: 'result.details' is 
 
 80       expect(result.details.userPoolId).toBe(construct.userPool.userPoolId);
                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:31:7 - error TS2698: Spread types may only be created from object types.
+test/serverless-web-app-construct.test.ts:14:7 - error TS6133: 'template' is declared but its value is never read.
 
-31       ...actual,
-         ~~~~~~~~~
-test/security-validation.test.ts:147:14 - error TS18048: 'result.details' is possibly 'undefined'.
-
-147       expect(result.details.issues).toHaveLength(0);
-                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:175:14 - error TS18048: 'result.details' is possibly 'undefined'.
-
-175       expect(result.details.issues).toHaveLength(1);
-                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:201:14 - error TS18048: 'result.details' is possibly 'undefined'.
-
-201       expect(result.details.issues).toHaveLength(1);
-                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:202:14 - error TS18048: 'result.details' is possibly 'undefined'.
-
-202       expect(result.details.overlyPermissiveResources).toHaveLength(1);
-                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:208:48 - error TS6133: 'role' is declared but its value is never read.
-
-208       originalValidate.mockImplementationOnce((role, options) => {
-                                                   ~~~~
-test/security-validation.test.ts:293:14 - error TS18048: 'result.details' is possibly 'undefined'.
-
-293       expect(result.details.apiId).toBe(secureApi.node.id);
-                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:316:14 - error TS18048: 'result.details' is possibly 'undefined'.
-
-316       expect(result.details.hasWildcardOrigin).toBeFalsy();
-                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:335:14 - error TS18048: 'result.details' is possibly 'undefined'.
-
-335       expect(result.details.issues).toHaveLength(1);
-                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:336:14 - error TS18048: 'result.details' is possibly 'undefined'.
-
-336       expect(result.details.hasWildcardOrigin).toBeTruthy();
-                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:355:14 - error TS18048: 'result.details' is possibly 'undefined'.
-
-355       expect(result.details.issues.length).toBeGreaterThanOrEqual(2);
-                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:355:14 - error TS18046: 'result.details.issues' is of type 'unknown'.
-
-355       expect(result.details.issues.length).toBeGreaterThanOrEqual(2);
-                 ~~~~~~~~~~~~~~~~~~~~~
-test/security-validation.test.ts:356:14 - error TS18048: 'result.details' is possibly 'undefined'.
-
-356       expect(result.details.hasCredentialsWithWildcard).toBeTruthy();
-                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:374:14 - error TS18048: 'result.details' is possibly 'undefined'.
-
-374       expect(result.details.bucketName).toBe(secureBucket.node.id);
-                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:409:14 - error TS18048: 'result.details' is possibly 'undefined'.
-
-409       expect(result.details.issues.length).toBeGreaterThanOrEqual(1);
-                 ~~~~~~~~~~~~~~
-test/security-validation.test.ts:409:14 - error TS18046: 'result.details.issues' is of type 'unknown'.
-
-409       expect(result.details.issues.length).toBeGreaterThanOrEqual(1);
-                 ~~~~~~~~~~~~~~~~~~~~~
-test/security-validation.test.ts:443:7 - error TS1345: An expression of type 'void' cannot be tested for truthiness.
-
-443       expect(consoleLogSpy).toHaveBeenCalled() || expect(consoleWarnSpy).toHaveBeenCalled();
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-test/serverless-web-app-construct.test.ts:13:7 - error TS6133: 'template' is declared but its value is never read.
-
-13   let template: Template; // Used in tests
+14   let template: Template;
          ~~~~~~~~

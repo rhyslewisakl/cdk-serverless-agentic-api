@@ -28,6 +28,9 @@ describe('CDKServerlessAgenticAPI', () => {
       expect(construct.lambdaFunctions.size).toBe(2); // Health and whoami endpoints are automatically created
       expect(construct.bucket).toBeInstanceOf(s3.Bucket);
       expect(construct.originAccessIdentity).toBeDefined();
+      
+      // Use template to verify resources were created
+      template.resourceCountIs('AWS::S3::Bucket', 1);
     });
 
     it('should create construct with custom properties', () => {

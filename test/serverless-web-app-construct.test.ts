@@ -2,8 +2,6 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { App, Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import * as s3 from 'aws-cdk-lib/aws-s3';
-// import * as lambda from 'aws-cdk-lib/aws-lambda';
-// import * as iam from 'aws-cdk-lib/aws-iam';
 import { CDKServerlessAgenticAPI } from '../src/cdk-serverless-agentic-api';
 import { CDKServerlessAgenticAPIProps } from '../src/types';
 
@@ -28,6 +26,9 @@ describe('CDKServerlessAgenticAPI', () => {
       expect(construct.lambdaFunctions.size).toBe(2); // Health and whoami endpoints are automatically created
       expect(construct.bucket).toBeInstanceOf(s3.Bucket);
       expect(construct.originAccessIdentity).toBeDefined();
+      
+      // Use template to verify resources were created
+      template.resourceCountIs('AWS::S3::Bucket', 1);
     });
 
     it('should create construct with custom properties', () => {
