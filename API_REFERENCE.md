@@ -76,6 +76,30 @@ api.enforceSecurityBestPractices({
 | `cognitoAuthorizer` | API Gateway Cognito authorizer | `cognitoAuthorizer.ref` |
 | `lambdaFunctions` | Map of all Lambda functions | `lambdaFunctions.get('/api/users')?.function` |
 
+## Default Endpoints
+
+### Config Endpoint
+
+The construct automatically creates a `/api/config` endpoint that provides frontend applications with necessary configuration information:
+
+```typescript
+// The config endpoint returns:
+{
+  "auth": {
+    "region": "us-east-1",                           // AWS region
+    "userPoolId": "us-east-1_abcdefghi",             // Cognito User Pool ID
+    "userPoolWebClientId": "1234567890abcdefghi",   // Cognito User Pool Client ID
+    "oauth": { /* OAuth configuration */ }
+  },
+  "api": {
+    "endpoints": [{ "name": "api", "endpoint": "https://..." }]
+  },
+  "version": "1.0.0"
+}
+```
+
+This endpoint should be used by frontend applications to retrieve configuration values instead of hardcoding them from CDK outputs.
+
 ## Configuration Options
 
 ### CDKServerlessAgenticAPIProps

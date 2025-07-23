@@ -144,7 +144,7 @@ export class CDKServerlessAgenticAPI extends Construct {
   }
 
   /**
-   * Creates default health and whoami endpoints
+   * Creates default health, whoami, and config endpoints
    */
   private createDefaultEndpoints(): void {
     // Create health endpoint
@@ -168,6 +168,22 @@ export class CDKServerlessAgenticAPI extends Construct {
       environment: {
         API_VERSION: '1.0.0',
         SERVICE_NAME: 'serverless-web-app-api'
+      }
+    });
+    
+    // Create config endpoint for frontend configuration
+    this.addResource({
+      path: '/config',
+      method: 'GET',
+      lambdaSourcePath: path.join(__dirname, '../lambda/config'),
+      requiresAuth: false,
+      environment: {
+        USER_POOL_ID: this.userPool.userPoolId,
+        USER_POOL_CLIENT_ID: this.userPoolClient.userPoolClientId,
+        COGNITO_DOMAIN: `${this.userPool.userPoolId}.auth.${process.env.AWS_REGION || 'us-east-1'}.amazoncognito.com`,
+        API_URL: this.api.url,
+        API_VERSION: '1.0.0',
+        AWS_REGION: process.env.AWS_REGION || 'us-east-1'
       }
     });
   }

@@ -352,10 +352,55 @@ exports.handler = async (event, context) => {
 
 ## Default Endpoints
 
-The construct automatically creates two default endpoints:
+The construct automatically creates three default endpoints:
 
 1. **Health Check** (`/api/health`): A public endpoint that returns a 200 OK response
 2. **WhoAmI** (`/api/whoami`): An authenticated endpoint that returns the current user's Cognito claims
+3. **Config** (`/api/config`): A public endpoint that provides frontend configuration information
+
+### Using the Config Endpoint
+
+The config endpoint returns essential information needed by frontend applications to connect to the backend services:
+
+```javascript
+// Example of fetching configuration from the config endpoint
+async function fetchConfig() {
+  const response = await fetch('https://your-api-url.com/api/config');
+  const config = await response.json();
+  
+  // Use the configuration to set up your frontend app
+  // This avoids hardcoding values from CDK outputs
+  return config;
+}
+
+// Example response structure
+{
+  "auth": {
+    "region": "us-east-1",
+    "userPoolId": "us-east-1_abcdefghi",
+    "userPoolWebClientId": "1234567890abcdefghijklmnop",
+    "oauth": {
+      "domain": "your-domain.auth.us-east-1.amazoncognito.com",
+      "scope": ["email", "profile", "openid"],
+      "redirectSignIn": "",
+      "redirectSignOut": "",
+      "responseType": "code"
+    }
+  },
+  "api": {
+    "endpoints": [
+      {
+        "name": "api",
+        "endpoint": "https://api-id.execute-api.us-east-1.amazonaws.com/api",
+        "region": "us-east-1"
+      }
+    ]
+  },
+  "version": "1.0.0"
+}
+```
+
+> **Important**: Always use the config endpoint instead of hardcoding values from CDK outputs. This ensures your frontend application can adapt to changes in the backend infrastructure.
 
 ## Security Best Practices
 

@@ -1,0 +1,9 @@
+{
+  "name": "config-lambda",
+  "version": "1.0.0",
+  "description": "Lambda function that provides frontend configuration",
+  "main": "index.js",
+  "author": "Rhys Lewis",
+  "license": "MIT",
+  "dependencies": {}
+}
