@@ -1,0 +1,50 @@
+{
+  "name": "cdk-serverless-agentic-api",
+  "version": "1.1.0",
+  "description": "CDK construct for serverless web applications with CloudFront, S3, Cognito, API Gateway, and Lambda",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf lib/",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
+  },
+  "keywords": [
+    "aws",
+    "cdk",
+    "construct",
+    "serverless",
+    "web-app",
+    "cloudfront",
+    "s3",
+    "cognito",
+    "api-gateway",
+    "lambda"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.6.0",
+    "vitest": "^0.34.6",
+    "aws-cdk-lib": "^2.170.0",
+    "constructs": "^10.4.0"
+  },
+  "peerDependencies": {
+    "aws-cdk-lib": "^2.170.0",
+    "constructs": "^10.4.0"
+  },
+  "files": [
+    "lib/**/*"
+  ]
+}
