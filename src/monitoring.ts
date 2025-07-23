@@ -14,7 +14,7 @@ import { LambdaFunctionEntry } from './types';
  * @param constructId The ID of the parent construct
  */
 export function createApiGatewayAlarms(
-  scope: Record<string, unknown>,
+  scope: Construct,
   api: apigateway.RestApi,
   dashboard: cloudwatch.Dashboard,
   constructId: string
@@ -142,7 +142,7 @@ export function createApiGatewayAlarms(
  * @param constructId The ID of the parent construct
  */
 export function createLambdaAlarms(
-  scope: Record<string, unknown>,
+  scope: Construct,
   lambdaFunctions: Map<string, LambdaFunctionEntry>,
   dashboard: cloudwatch.Dashboard,
   constructId: string
@@ -202,7 +202,7 @@ export function createLambdaAlarms(
  * @param constructId The ID of the parent construct
  */
 export function createCloudFrontAlarms(
-  scope: Record<string, unknown>,
+  scope: Construct,
   distribution: cloudfront.Distribution,
   dashboard: cloudwatch.Dashboard,
   constructId: string
@@ -307,7 +307,7 @@ export function createCloudFrontAlarms(
  * @returns The created CloudWatch dashboard
  */
 export function createMonitoringResources(
-  scope: Record<string, unknown>,
+  scope: Construct,
   api: apigateway.RestApi,
   lambdaFunctions: Map<string, LambdaFunctionEntry>,
   distribution: cloudfront.Distribution,

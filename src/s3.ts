@@ -15,7 +15,7 @@ import { CDKServerlessAgenticAPIProps } from './types';
  */
 export function createS3Bucket(
   scope: Construct,
-  id: string,
+  _id: string, // Prefix with underscore to indicate it's not used
   props?: CDKServerlessAgenticAPIProps
 ): s3.Bucket {
   return new s3.Bucket(scope, 'StaticWebsiteBucket', {

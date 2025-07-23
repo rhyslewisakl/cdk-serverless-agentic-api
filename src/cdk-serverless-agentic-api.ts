@@ -10,6 +10,7 @@ import {
   ResourceConfig,
   LambdaFunctionEntry 
 } from './types';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import { validateSecurityConfiguration, SecurityValidationResult, SecurityValidationOptions, SecurityEnforcementOptions, enforceSecurityBestPractices } from './security-validation';
 import { createS3Bucket, createOriginAccessIdentity, configureBucketPolicy, createLoggingBucket } from './s3';
 import { createUserPool } from './cognito';
@@ -130,7 +131,7 @@ export class CDKServerlessAgenticAPI extends Construct {
     // Configure monitoring and alarms if logging is enabled
     if (props?.enableLogging !== false) {
       createMonitoringResources(
-        this,
+        this as unknown as Construct,
         this.api,
         this.lambdaFunctions,
         this.distribution,
@@ -269,7 +270,7 @@ export class CDKServerlessAgenticAPI extends Construct {
     functionName: string,
     sourcePath: string,
     environment?: { [key: string]: string },
-    additionalPolicies?: Record<string, unknown>[]
+    additionalPolicies?: iam.PolicyStatement[]
   ): lambda.Function {
     return createLambdaFunction(
       this,

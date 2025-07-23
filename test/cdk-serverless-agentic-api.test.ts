@@ -10,7 +10,8 @@ import { CDKServerlessAgenticAPIProps } from '../src/types';
 describe('CDKServerlessAgenticAPI', () => {
   let app: App;
   let stack: Stack;
-  let template: Template; // Used in tests
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let template: Template;
 
   beforeEach(() => {
     app = new App();

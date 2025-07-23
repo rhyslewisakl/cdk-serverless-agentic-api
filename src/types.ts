@@ -1,4 +1,5 @@
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+// Note: We intentionally avoid importing iam types here to prevent circular dependencies
 
 /**
  * Configuration properties for the CDKServerlessAgenticAPI
@@ -152,5 +153,5 @@ export interface LambdaFunctionOptions {
   /**
    * Additional IAM policy statements to attach to the Lambda execution role
    */
-  readonly additionalPolicies?: Record<string, unknown>[]; // Using Record<string, unknown>[] to avoid importing iam types in types file
+  readonly additionalPolicies?: any[]; // Using any[] to avoid circular imports with iam types
 }
