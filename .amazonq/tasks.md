@@ -89,7 +89,7 @@ This document outlines the steps needed to prepare the CDK Serverless Agentic AP
   - [x] Fix unused variables (add `// eslint-disable-next-line @typescript-eslint/no-unused-vars` where needed)
   - [x] Fix type errors in tests
   - [x] Update examples to use `CDKServerlessAgenticAPI` instead of `ServerlessWebAppConstruct`
-- [ ] Build the package: `npm run build`
+- [x] Build the package: `npm run build`
 - [ ] Generate JSII artifacts: `npm run package`
 - [x] Create a .npmignore file to exclude unnecessary files
 
