@@ -2,10 +2,10 @@ import { App, Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import { ServerlessWebAppConstruct } from '../../src';
+import { CDKServerlessAgenticAPI } from '../../src';
 
 /**
- * Example stack that demonstrates advanced usage of the ServerlessWebAppConstruct
+ * Example stack that demonstrates advanced usage of the CDKServerlessAgenticAPI
  * with custom domain and DynamoDB integration
  */
 class AdvancedExampleStack extends Stack {
@@ -28,7 +28,7 @@ class AdvancedExampleStack extends Stack {
     });
 
     // Create the serverless web app construct with custom domain
-    const webApp = new ServerlessWebAppConstruct(this, 'AdvancedWebApp', {
+    const webApp = new CDKServerlessAgenticAPI(this, 'AdvancedWebApp', {
       domainName: 'example.com',
       certificateArn: 'arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012',
       enableLogging: true

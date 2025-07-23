@@ -1,16 +1,16 @@
 import { App, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { ServerlessWebAppConstruct } from '../../src';
+import { CDKServerlessAgenticAPI } from '../../src';
 
 /**
- * Example stack that demonstrates basic usage of the ServerlessWebAppConstruct
+ * Example stack that demonstrates basic usage of the CDKServerlessAgenticAPI
  */
 class BasicExampleStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     // Create the serverless web app construct with default settings
-    const webApp = new ServerlessWebAppConstruct(this, 'BasicWebApp');
+    const webApp = new CDKServerlessAgenticAPI(this, 'BasicWebApp');
 
     // Add a public API endpoint
     webApp.addResource({

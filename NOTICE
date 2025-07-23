@@ -1,0 +1,17 @@
+# Third-Party Software Notices and Information
+
+This project incorporates components from the projects listed below. The original copyright notices and the licenses under which Rhys Lewis received such components are set forth below.
+
+## AWS CDK Library
+
+AWS CDK is licensed under the Apache License 2.0.
+https://github.com/aws/aws-cdk/blob/main/LICENSE
+
+## Constructs Library
+
+Constructs is licensed under the Apache License 2.0.
+https://github.com/aws/constructs/blob/main/LICENSE
+
+---
+
+All other dependencies are development dependencies and are not distributed with this package.
