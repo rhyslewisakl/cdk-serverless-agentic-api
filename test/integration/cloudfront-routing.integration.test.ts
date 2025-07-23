@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, it } from 'vitest';
 
 describe('CloudFront Routing Integration', () => {

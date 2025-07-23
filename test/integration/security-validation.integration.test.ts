@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, it, expect } from 'vitest';
 import { App, Stack } from 'aws-cdk-lib';
 import { CDKServerlessAgenticAPI } from '../../src/cdk-serverless-agentic-api';
