@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, afterEach, MockInstance } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { App, Stack } from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
@@ -12,7 +12,7 @@ import {
   validateCorsConfiguration,
   validateS3BucketSecurity,
   validateSecurityConfiguration,
-  SecurityValidationResult
+  // SecurityValidationResult
 } from '../src/security-validation';
 
 describe('Security Validation', () => {
@@ -30,7 +30,7 @@ describe('Security Validation', () => {
     return {
       ...actual,
       // Override the validation functions for testing
-      validateIamPolicyLeastPrivilege: vi.fn().mockImplementation((role, options) => {
+      validateIamPolicyLeastPrivilege: vi.fn().mockImplementation((role, _options) => {
         // For testing, consider roles with "Secure" in the name as secure
         const isSecure = role.node.id.includes('Secure');
         return {
@@ -47,7 +47,7 @@ describe('Security Validation', () => {
           }
         };
       }),
-      validateHttpsEnforcement: vi.fn().mockImplementation((distribution, options) => {
+      validateHttpsEnforcement: vi.fn().mockImplementation((distribution, _options) => {
         // For testing, consider distributions with "Secure" in the name as secure
         const isSecure = distribution.node.id.includes('Secure');
         return {
@@ -64,7 +64,7 @@ describe('Security Validation', () => {
           }
         };
       }),
-      validateCorsConfiguration: vi.fn().mockImplementation((api, options) => {
+      validateCorsConfiguration: vi.fn().mockImplementation((api, _options) => {
         // For testing, consider APIs with "Secure" in the name as secure
         const isSecure = api.node.id.includes('Secure');
         const hasWildcard = api.node.id.includes('Insecure');
@@ -87,7 +87,7 @@ describe('Security Validation', () => {
           }
         };
       }),
-      validateS3BucketSecurity: vi.fn().mockImplementation((bucket, options) => {
+      validateS3BucketSecurity: vi.fn().mockImplementation((bucket, _options) => {
         // For testing, consider buckets with "Secure" in the name as secure
         const isSecure = bucket.node.id.includes('Secure');
         return {

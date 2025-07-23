@@ -1,11 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   createErrorResponse,
   createSuccessResponse,
   withErrorHandling,
   validateCognitoClaims,
   validateRequestBody,
-  createErrorPages,
+  // createErrorPages,
   ValidationError,
   AuthenticationError,
   AuthorizationError,
@@ -15,8 +15,8 @@ import {
   HttpStatusCode,
   CORS_HEADERS
 } from '../src/error-handling';
-import { Construct } from 'constructs';
-import * as s3 from 'aws-cdk-lib/aws-s3';
+// import { Construct } from 'constructs';
+// import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Duration } from 'aws-cdk-lib';
 
 describe('Error Handling Utilities', () => {

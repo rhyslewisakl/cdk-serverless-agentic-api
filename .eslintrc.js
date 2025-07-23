@@ -24,7 +24,6 @@ module.exports = {
     'lib/',
     'node_modules/',
     '*.js',
-    'test/',
     'vitest.config.ts'
   ]
 };

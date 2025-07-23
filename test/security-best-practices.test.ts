@@ -1,27 +1,28 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { App, Stack } from 'aws-cdk-lib';
-import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as iam from 'aws-cdk-lib/aws-iam';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as apigateway from 'aws-cdk-lib/aws-apigateway';
-import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
-import * as cognito from 'aws-cdk-lib/aws-cognito';
+// These imports are used indirectly through the construct
+// import * as s3 from 'aws-cdk-lib/aws-s3';
+// import * as iam from 'aws-cdk-lib/aws-iam';
+// import * as lambda from 'aws-cdk-lib/aws-lambda';
+// import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+// import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+// import * as cognito from 'aws-cdk-lib/aws-cognito';
 import { CDKServerlessAgenticAPI } from '../src/cdk-serverless-agentic-api';
 import {
-  validateIamPolicyLeastPrivilege,
+  // validateIamPolicyLeastPrivilege,
   validateHttpsEnforcement,
-  validateCorsConfiguration,
+  // validateCorsConfiguration,
   validateS3BucketSecurity,
   validateLambdaFunctionSecurity,
   validateApiGatewaySecurity,
   validateCognitoUserPoolSecurity,
-  enforceSecurityBestPractices,
+  // enforceSecurityBestPractices,
   enforceHttpsSecurity,
-  enforceS3Security,
-  enforceApiGatewaySecurity,
-  enforceLambdaSecurity,
-  enforceCognitoSecurity,
-  enforceIamLeastPrivilege
+  enforceS3Security
+  // enforceApiGatewaySecurity,
+  // enforceLambdaSecurity,
+  // enforceCognitoSecurity,
+  // enforceIamLeastPrivilege
 } from '../src/security-validation';
 
 describe('Security Best Practices', () => {
