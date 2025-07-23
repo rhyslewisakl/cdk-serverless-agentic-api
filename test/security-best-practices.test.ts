@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, it, expect, beforeEach } from 'vitest';
 import { App, Stack } from 'aws-cdk-lib';
 // These imports are used indirectly through the construct

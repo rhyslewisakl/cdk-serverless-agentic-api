@@ -8,6 +8,15 @@ yarn-error.log*
 lib/
 dist/
 *.tsbuildinfo
+.jsii
+*.js.map
+*.d.ts.map
+*.d.ts
+test/**/*.js
+examples/**/*.js
+src/*.js
+errors.txt
+lint_errors.txt
 
 # IDE
 .vscode/

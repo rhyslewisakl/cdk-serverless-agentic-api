@@ -8,7 +8,7 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "build": "jsii",
+    "build": "tsc --project tsconfig.json && jsii",
     "watch": "jsii -w",
     "test": "vitest run",
     "test:watch": "vitest",
