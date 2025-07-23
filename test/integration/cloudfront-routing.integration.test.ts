@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { App, Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { ServerlessWebAppConstruct } from '../../src/serverless-web-app-construct';
+import { CDKServerlessAgenticAPI } from '../../src/cdk-serverless-agentic-api';
 
 describe('CloudFront Routing Integration', () => {
   it('should correctly route requests to S3 and API Gateway origins', () => {
     // Create a test stack and construct
     const app = new App();
     const stack = new Stack(app, 'CloudFrontRoutingTestStack');
-    const construct = new ServerlessWebAppConstruct(stack, 'CloudFrontRoutingTestConstruct');
+    const construct = new CDKServerlessAgenticAPI(stack, 'CloudFrontRoutingTestConstruct');
     
     // Add API resources
     construct.addResource({
@@ -100,7 +100,7 @@ describe('CloudFront Routing Integration', () => {
     // Create a test stack and construct
     const app = new App();
     const stack = new Stack(app, 'ErrorResponseTestStack');
-    const construct = new ServerlessWebAppConstruct(stack, 'ErrorResponseTestConstruct');
+    const construct = new CDKServerlessAgenticAPI(stack, 'ErrorResponseTestConstruct');
     
     // Synthesize the template
     const template = Template.fromStack(stack);
@@ -128,7 +128,7 @@ describe('CloudFront Routing Integration', () => {
     // Create a test stack and construct
     const app = new App();
     const stack = new Stack(app, 'CacheBehaviorTestStack');
-    const construct = new ServerlessWebAppConstruct(stack, 'CacheBehaviorTestConstruct');
+    const construct = new CDKServerlessAgenticAPI(stack, 'CacheBehaviorTestConstruct');
     
     // Synthesize the template
     const template = Template.fromStack(stack);

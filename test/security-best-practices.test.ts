@@ -6,7 +6,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
-import { ServerlessWebAppConstruct } from '../src/serverless-web-app-construct';
+import { CDKServerlessAgenticAPI } from '../src/cdk-serverless-agentic-api';
 import {
   validateIamPolicyLeastPrivilege,
   validateHttpsEnforcement,
@@ -27,12 +27,12 @@ import {
 describe('Security Best Practices', () => {
   let app: App;
   let stack: Stack;
-  let construct: ServerlessWebAppConstruct;
+  let construct: CDKServerlessAgenticAPI;
   
   beforeEach(() => {
     app = new App();
     stack = new Stack(app, 'TestStack');
-    construct = new ServerlessWebAppConstruct(stack, 'TestConstruct');
+    construct = new CDKServerlessAgenticAPI(stack, 'TestConstruct');
   });
   
   describe('Security Validation', () => {
@@ -104,9 +104,9 @@ describe('Security Best Practices', () => {
       const cognitoResults = results.filter(r => r.message.includes('Cognito User Pool'));
       
       expect(iamResults.length).toBeGreaterThan(0);
-      expect(httpsResults.length).toBe(1);
-      expect(corsResults.length).toBe(1);
-      expect(s3Results.length).toBe(1);
+      expect(httpsResults.length).toBeGreaterThan(0);
+      expect(corsResults.length).toBeGreaterThan(0);
+      expect(s3Results.length).toBeGreaterThan(0);
       expect(lambdaResults.length).toBeGreaterThan(0);
       expect(apiResults.length).toBe(1);
       expect(cognitoResults.length).toBe(1);

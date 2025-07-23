@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { App, Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { ServerlessWebAppConstruct } from '../../src/serverless-web-app-construct';
+import { CDKServerlessAgenticAPI } from '../../src/cdk-serverless-agentic-api';
 
 describe('Authentication Flow Integration', () => {
   it('should correctly configure Cognito user pool and identity pool', () => {
     // Create a test stack and construct
     const app = new App();
     const stack = new Stack(app, 'AuthFlowTestStack');
-    const construct = new ServerlessWebAppConstruct(stack, 'AuthFlowTestConstruct');
+    const construct = new CDKServerlessAgenticAPI(stack, 'AuthFlowTestConstruct');
     
     // Add authenticated resource
     construct.addResource({
@@ -122,7 +122,7 @@ describe('Authentication Flow Integration', () => {
     // Create a test stack and construct
     const app = new App();
     const stack = new Stack(app, 'ApiAuthorizerTestStack');
-    const construct = new ServerlessWebAppConstruct(stack, 'ApiAuthorizerTestConstruct');
+    const construct = new CDKServerlessAgenticAPI(stack, 'ApiAuthorizerTestConstruct');
     
     // Add authenticated resource
     construct.addResource({
@@ -166,7 +166,7 @@ describe('Authentication Flow Integration', () => {
     // Create a test stack and construct
     const app = new App();
     const stack = new Stack(app, 'LambdaAuthTestStack');
-    const construct = new ServerlessWebAppConstruct(stack, 'LambdaAuthTestConstruct');
+    const construct = new CDKServerlessAgenticAPI(stack, 'LambdaAuthTestConstruct');
     
     // Add authenticated resource
     construct.addResource({

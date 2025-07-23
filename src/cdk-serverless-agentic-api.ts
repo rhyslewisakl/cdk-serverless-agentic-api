@@ -17,6 +17,7 @@ import { createApiGateway, createCognitoAuthorizer, createApiGatewayResource, cr
 import { createLambdaFunction, createApiLambdaFunction } from './lambda';
 import { createCloudFrontDistribution } from './cloudfront';
 import { createMonitoringResources } from './monitoring';
+import * as path from 'path';
 
 /**
  * CDK construct that creates a complete serverless web application infrastructure
@@ -136,6 +137,38 @@ export class CDKServerlessAgenticAPI extends Construct {
         id
       );
     }
+
+    // Create default endpoints
+    this.createDefaultEndpoints();
+  }
+
+  /**
+   * Creates default health and whoami endpoints
+   */
+  private createDefaultEndpoints(): void {
+    // Create health endpoint
+    this.addResource({
+      path: '/health',
+      method: 'GET',
+      lambdaSourcePath: path.join(__dirname, '../lambda/health'),
+      requiresAuth: false,
+      environment: {
+        API_VERSION: '1.0.0',
+        SERVICE_NAME: 'serverless-web-app-api'
+      }
+    });
+
+    // Create whoami endpoint
+    this.addResource({
+      path: '/whoami',
+      method: 'GET',
+      lambdaSourcePath: path.join(__dirname, '../lambda/whoami'),
+      requiresAuth: true,
+      environment: {
+        API_VERSION: '1.0.0',
+        SERVICE_NAME: 'serverless-web-app-api'
+      }
+    });
   }
 
   /**

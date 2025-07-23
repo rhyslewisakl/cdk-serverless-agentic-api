@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { App, Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { ServerlessWebAppConstruct } from '../../src/serverless-web-app-construct';
+import { CDKServerlessAgenticAPI } from '../../src/cdk-serverless-agentic-api';
 
 describe('API Gateway to Lambda Integration', () => {
   it('should correctly integrate API Gateway with Lambda functions', () => {
     // Create a test stack and construct
     const app = new App();
     const stack = new Stack(app, 'ApiLambdaTestStack');
-    const construct = new ServerlessWebAppConstruct(stack, 'ApiLambdaTestConstruct');
+    const construct = new CDKServerlessAgenticAPI(stack, 'ApiLambdaTestConstruct');
     
     // Add multiple resources with different HTTP methods
     construct.addResource({
@@ -103,7 +103,7 @@ describe('API Gateway to Lambda Integration', () => {
     // Create a test stack and construct
     const app = new App();
     const stack = new Stack(app, 'AuthTestStack');
-    const construct = new ServerlessWebAppConstruct(stack, 'AuthTestConstruct');
+    const construct = new CDKServerlessAgenticAPI(stack, 'AuthTestConstruct');
     
     // Add public and authenticated resources
     construct.addResource({

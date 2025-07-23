@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { App, Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { ServerlessWebAppConstruct } from '../../src/serverless-web-app-construct';
+import { CDKServerlessAgenticAPI } from '../../src/cdk-serverless-agentic-api';
 
 describe('Construct Deployment Integration', () => {
   it('should deploy construct with all required resources', () => {
     // Create a test stack and construct
     const app = new App();
     const stack = new Stack(app, 'IntegrationTestStack');
-    const construct = new ServerlessWebAppConstruct(stack, 'IntegrationTestConstruct');
+    const construct = new CDKServerlessAgenticAPI(stack, 'IntegrationTestConstruct');
     
     // Add a test resource
     construct.addResource({
@@ -75,7 +75,7 @@ describe('Construct Deployment Integration', () => {
     // Create a test stack and construct with custom domain
     const app = new App();
     const stack = new Stack(app, 'CustomDomainTestStack');
-    const construct = new ServerlessWebAppConstruct(stack, 'CustomDomainTestConstruct', {
+    const construct = new CDKServerlessAgenticAPI(stack, 'CustomDomainTestConstruct', {
       domainName: 'example.com',
       certificateArn: 'arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012'
     });
@@ -99,7 +99,7 @@ describe('Construct Deployment Integration', () => {
     // Create a test stack and construct with logging enabled
     const app = new App();
     const stack = new Stack(app, 'LoggingTestStack');
-    const construct = new ServerlessWebAppConstruct(stack, 'LoggingTestConstruct', {
+    const construct = new CDKServerlessAgenticAPI(stack, 'LoggingTestConstruct', {
       enableLogging: true
     });
     
