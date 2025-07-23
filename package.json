@@ -8,37 +8,50 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
+    "build": "jsii",
+    "watch": "jsii -w",
     "test": "vitest run",
     "test:watch": "vitest",
-    "clean": "rm -rf lib/",
+    "clean": "rm -rf lib/ dist/",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "package": "jsii-pacmak"
   },
   "keywords": [
     "aws",
     "cdk",
-    "construct",
+    "aws-cdk",
+    "constructs",
     "serverless",
     "web-app",
     "cloudfront",
     "s3",
     "cognito",
     "api-gateway",
-    "lambda"
+    "lambda",
+    "agentic"
   ],
-  "author": "",
+  "author": "Rhys Lewis, rhys@rhyslewis.nz",
   "license": "MIT",
+  "homepage": "https://github.com/rhyslewisakl/cdk-serverless-agentic-api",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rhyslewisakl/cdk-serverless-agentic-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rhyslewisakl/cdk-serverless-agentic-api/issues"
+  },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
-    "eslint": "^8.57.0",
-    "typescript": "^5.6.0",
-    "vitest": "^0.34.6",
     "aws-cdk-lib": "^2.170.0",
-    "constructs": "^10.4.0"
+    "constructs": "^10.4.0",
+    "eslint": "^8.57.0",
+    "jsii": "^5.8.16",
+    "jsii-pacmak": "^1.112.0",
+    "typescript": "^5.6.0",
+    "vitest": "^0.34.6"
   },
   "peerDependencies": {
     "aws-cdk-lib": "^2.170.0",
@@ -46,5 +59,29 @@
   },
   "files": [
     "lib/**/*"
-  ]
+  ],
+  "jsii": {
+    "outdir": "dist",
+    "targets": {
+      "python": {
+        "distName": "cdk-serverless-agentic-api",
+        "module": "cdk_serverless_agentic_api"
+      },
+      "java": {
+        "package": "nz.rhyslewis.cdkserverlessagenticapi",
+        "maven": {
+          "groupId": "nz.rhyslewis",
+          "artifactId": "cdk-serverless-agentic-api"
+        }
+      },
+      "dotnet": {
+        "namespace": "NZRhysLewis.CdkServerlessAgenticApi",
+        "packageId": "NZRhysLewis.CdkServerlessAgenticApi"
+      }
+    }
+  },
+  "awscdkio": {
+    "twitter": "rhyslewisakl",
+    "announce": true
+  }
 }

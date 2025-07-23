@@ -1,0 +1,47 @@
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
+# TypeScript source files
+src/
+*.ts
+!*.d.ts
+
+# Test files
+test/
+*.test.ts
+vitest.config.ts
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Git files
+.git/
+.gitignore
+
+# Build files
+tsconfig.json
+.eslintrc.js
+.eslintignore
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+
+# Amazon Q files
+.amazonq/
+
+# Misc
+.DS_Store
+*.tgz
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
