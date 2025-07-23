@@ -52,6 +52,29 @@ This construct follows AWS best practices for security, performance, and cost op
 - **npm**: 8.0.0 or higher
 - **AWS CDK**: 2.170.0 or higher
 
+## Quick Start
+
+```typescript
+import { CDKServerlessAgenticAPI } from 'cdk-serverless-agentic-api';
+import { Stack } from 'aws-cdk-lib';
+
+export class MyStack extends Stack {
+  constructor(scope, id, props) {
+    super(scope, id, props);
+    
+    // Create the serverless API with default settings
+    const api = new CDKServerlessAgenticAPI(this, 'MyApi');
+    
+    // Add an endpoint
+    api.addResource({
+      path: '/hello',
+      lambdaSourcePath: './lambda/hello',
+      requiresAuth: false
+    });
+  }
+}
+
+
 ## Installation
 
 ```bash
@@ -233,33 +256,43 @@ webApp.validateSecurity({
 
 ## API Reference
 
-### CDKServerlessAgenticAPI
-
-The main construct class that creates the serverless web application infrastructure.
+### Key Methods
 
 ```typescript
-new CDKServerlessAgenticAPI(scope: Construct, id: string, props?: CDKServerlessAgenticAPIProps)
+// Add an API endpoint with Lambda integration
+const userFunction = api.addResource({
+  path: '/users',
+  method: 'GET',
+  lambdaSourcePath: './lambda/users',
+  requiresAuth: true
+});
+
+// Create a standalone Lambda function
+const processor = api.createLambdaFunction(
+  'DataProcessor',
+  './lambda/processor',
+  { BUCKET_NAME: api.bucket.bucketName }
+);
+
+// Validate security configuration
+api.validateSecurity({ throwOnFailure: true });
+
+// Apply security best practices
+api.enforceSecurityBestPractices();
 ```
 
-#### Properties
+### Key Properties
 
-| Name | Type | Description |
-|------|------|-------------|
-| `bucket` | `s3.Bucket` | The S3 bucket for static website hosting |
-| `distribution` | `cloudfront.Distribution` | The CloudFront distribution |
-| `api` | `apigateway.RestApi` | The API Gateway REST API |
-| `userPool` | `cognito.UserPool` | The Cognito user pool |
-| `userPoolClient` | `cognito.UserPoolClient` | The Cognito user pool client |
-| `identityPool` | `cognito.CfnIdentityPool` | The Cognito identity pool |
-| `lambdaFunctions` | `Map<string, LambdaFunctionEntry>` | Registry of Lambda functions |
+```typescript
+// Access underlying AWS resources
+api.bucket                // S3 bucket for static files
+api.distribution          // CloudFront distribution
+api.api                   // API Gateway REST API
+api.userPool              // Cognito User Pool
+api.lambdaFunctions       // Map of all Lambda functions
+```
 
-#### Methods
-
-| Name | Parameters | Return Type | Description |
-|------|------------|-------------|-------------|
-| `addResource` | `options: AddResourceOptions` | `lambda.Function` | Adds an API resource with Lambda integration |
-| `validateSecurity` | `options?: SecurityValidationOptions` | `SecurityValidationResult[]` | Validates security configuration |
-| `createLambdaFunction` | `options: LambdaFunctionOptions` | `lambda.Function` | Creates a Lambda function |
+For complete API documentation, see [API_REFERENCE.md](./API_REFERENCE.md)
 
 ### CDKServerlessAgenticAPIProps
 
