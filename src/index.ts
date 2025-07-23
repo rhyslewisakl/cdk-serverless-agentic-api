@@ -1,10 +1,25 @@
-export * from './cdk-serverless-agentic-api';
-export * from './types';
-export * from './error-handling';
-export * from './security-validation';
-export * from './s3';
-export * from './cognito';
-export * from './api-gateway';
-export * from './lambda';
-export * from './cloudfront';
-export * from './monitoring';
+/**
+ * CDK Serverless Agentic API
+ * 
+ * A CDK construct that simplifies the creation of serverless web applications on AWS
+ * by providing a comprehensive solution that integrates CloudFront, S3, Cognito,
+ * API Gateway, and Lambda functions.
+ */
+
+// Export the main construct
+export { CDKServerlessAgenticAPI } from './cdk-serverless-agentic-api';
+
+// Export interfaces and types
+export {
+  CDKServerlessAgenticAPIProps,
+  AddResourceOptions,
+  ResourceConfig,
+  LambdaFunctionEntry
+} from './types';
+
+// Export security validation utilities
+export {
+  SecurityValidationResult,
+  SecurityValidationOptions,
+  SecurityEnforcementOptions
+} from './security-validation';
