@@ -131,7 +131,7 @@ export class CDKServerlessAgenticAPI extends Construct {
     // Configure monitoring and alarms if logging is enabled
     if (props?.enableLogging !== false) {
       createMonitoringResources(
-        this as unknown as Construct,
+        this as any as Construct,
         this.api,
         this.lambdaFunctions,
         this.distribution,

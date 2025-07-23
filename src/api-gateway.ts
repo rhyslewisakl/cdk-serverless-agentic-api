@@ -386,7 +386,7 @@ export function createApiGatewayMethod(
       authorizationType: apigateway.AuthorizationType.COGNITO,
       authorizer: {
         authorizerId: cognitoAuthorizer.ref,
-      } as unknown as apigateway.IAuthorizer,
+      } as any as apigateway.IAuthorizer,
       ...(config.cognitoGroup && {
         authorizationScopes: [`${config.cognitoGroup}`],
       }),

@@ -33,7 +33,7 @@ export interface SecurityValidationResult {
   /**
    * Detailed information about the validation
    */
-  details?: Record<string, unknown>;
+  details?: Record<string, any>;
 }
 
 /**
@@ -129,7 +129,7 @@ export function validateIamPolicyLeastPrivilege(
       // Access statements through toJSON() since statements is private
       const policyJson = (policy as iam.Policy).document.toJSON();
       if (policyJson.Statement) {
-        policyStatements.push(...policyJson.Statement.map((s: Record<string, unknown>) => iam.PolicyStatement.fromJson(s)));
+        policyStatements.push(...policyJson.Statement.map((s: Record<string, any>) => iam.PolicyStatement.fromJson(s)));
       }
     });
   
