@@ -216,12 +216,11 @@ export class Logger {
     const sanitized = { ...headers };
     const sensitiveHeaders = ['authorization', 'cookie', 'x-api-key', 'x-auth-token'];
     
-    sensitiveHeaders.forEach(header => {
-      if (sanitized[header]) {
-        sanitized[header] = '[REDACTED]';
-      }
-      if (sanitized[header.toLowerCase()]) {
-        sanitized[header.toLowerCase()] = '[REDACTED]';
+    // Check for case-insensitive matches
+    Object.keys(sanitized).forEach(key => {
+      const lowerKey = key.toLowerCase();
+      if (sensitiveHeaders.includes(lowerKey)) {
+        sanitized[key] = '[REDACTED]';
       }
     });
 
