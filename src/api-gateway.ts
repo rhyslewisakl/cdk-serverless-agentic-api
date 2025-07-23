@@ -39,8 +39,9 @@ export function createApiGateway(
   props?: CDKServerlessAgenticAPIProps
 ): apigateway.RestApi {
   // Create CloudWatch log group for API Gateway if logging is enabled
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const logGroup = props?.enableLogging !== false ? createApiGatewayLogGroup(scope, id) : undefined;
+  if (props?.enableLogging !== false) {
+    createApiGatewayLogGroup(scope, id);
+  }
 
   return new apigateway.RestApi(scope, 'Api', {
     restApiName: props?.apiName || `${id}-api`,

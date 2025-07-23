@@ -107,8 +107,7 @@ class AdvancedExampleStack extends Stack {
     productTable.grantReadData(getProductDetailsFunction);
 
     // Validate security configuration
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const securityResults = webApp.validateSecurity();
+    webApp.validateSecurity();
     
     // Outputs
     new CfnOutput(this, 'CloudFrontDomainName', {

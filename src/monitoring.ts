@@ -20,8 +20,7 @@ export function createApiGatewayAlarms(
   constructId: string
 ): void {
   // Create alarm for API Gateway 4xx errors
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const api4xxAlarm = new cloudwatch.Alarm(scope, 'ApiGateway4xxAlarm', {
+  new cloudwatch.Alarm(scope, 'ApiGateway4xxAlarm', {
     alarmName: `${constructId}-api-4xx-errors`,
     alarmDescription: 'API Gateway 4xx error rate is too high',
     metric: new cloudwatch.Metric({
@@ -40,8 +39,7 @@ export function createApiGatewayAlarms(
   });
 
   // Create alarm for API Gateway 5xx errors
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const api5xxAlarm = new cloudwatch.Alarm(scope, 'ApiGateway5xxAlarm', {
+  new cloudwatch.Alarm(scope, 'ApiGateway5xxAlarm', {
     alarmName: `${constructId}-api-5xx-errors`,
     alarmDescription: 'API Gateway 5xx error rate is too high',
     metric: new cloudwatch.Metric({
@@ -60,8 +58,7 @@ export function createApiGatewayAlarms(
   });
 
   // Create alarm for API Gateway latency
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const apiLatencyAlarm = new cloudwatch.Alarm(scope, 'ApiGatewayLatencyAlarm', {
+  new cloudwatch.Alarm(scope, 'ApiGatewayLatencyAlarm', {
     alarmName: `${constructId}-api-latency`,
     alarmDescription: 'API Gateway latency is too high',
     metric: new cloudwatch.Metric({
@@ -211,8 +208,7 @@ export function createCloudFrontAlarms(
   constructId: string
 ): void {
   // Create alarm for CloudFront 4xx errors
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const cloudfront4xxAlarm = new cloudwatch.Alarm(scope, 'CloudFront4xxAlarm', {
+  new cloudwatch.Alarm(scope, 'CloudFront4xxAlarm', {
     alarmName: `${constructId}-cloudfront-4xx-errors`,
     alarmDescription: 'CloudFront 4xx error rate is too high',
     metric: new cloudwatch.Metric({
@@ -230,8 +226,7 @@ export function createCloudFrontAlarms(
   });
 
   // Create alarm for CloudFront 5xx errors
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const cloudfront5xxAlarm = new cloudwatch.Alarm(scope, 'CloudFront5xxAlarm', {
+  new cloudwatch.Alarm(scope, 'CloudFront5xxAlarm', {
     alarmName: `${constructId}-cloudfront-5xx-errors`,
     alarmDescription: 'CloudFront 5xx error rate is too high',
     metric: new cloudwatch.Metric({

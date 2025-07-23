@@ -30,7 +30,7 @@ describe('Security Validation', () => {
     return {
       ...actual,
       // Override the validation functions for testing
-      validateIamPolicyLeastPrivilege: vi.fn().mockImplementation((role, _options) => {
+      validateIamPolicyLeastPrivilege: vi.fn().mockImplementation((role) => {
         // For testing, consider roles with "Secure" in the name as secure
         const isSecure = role.node.id.includes('Secure');
         return {
@@ -47,7 +47,7 @@ describe('Security Validation', () => {
           }
         };
       }),
-      validateHttpsEnforcement: vi.fn().mockImplementation((distribution, _options) => {
+      validateHttpsEnforcement: vi.fn().mockImplementation((distribution) => {
         // For testing, consider distributions with "Secure" in the name as secure
         const isSecure = distribution.node.id.includes('Secure');
         return {
@@ -64,7 +64,7 @@ describe('Security Validation', () => {
           }
         };
       }),
-      validateCorsConfiguration: vi.fn().mockImplementation((api, _options) => {
+      validateCorsConfiguration: vi.fn().mockImplementation((api) => {
         // For testing, consider APIs with "Secure" in the name as secure
         const isSecure = api.node.id.includes('Secure');
         const hasWildcard = api.node.id.includes('Insecure');
@@ -87,7 +87,7 @@ describe('Security Validation', () => {
           }
         };
       }),
-      validateS3BucketSecurity: vi.fn().mockImplementation((bucket, _options) => {
+      validateS3BucketSecurity: vi.fn().mockImplementation((bucket) => {
         // For testing, consider buckets with "Secure" in the name as secure
         const isSecure = bucket.node.id.includes('Secure');
         return {
