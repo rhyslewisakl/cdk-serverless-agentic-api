@@ -90,7 +90,7 @@ This document outlines the steps needed to prepare the CDK Serverless Agentic AP
   - [x] Fix type errors in tests
   - [x] Update examples to use `CDKServerlessAgenticAPI` instead of `ServerlessWebAppConstruct`
 - [x] Build the package: `npm run build`
-- [ ] Generate JSII artifacts: `npm run package`
+- [x] Generate JSII artifacts: `npm run package`
 - [x] Create a .npmignore file to exclude unnecessary files
 
 ### 7. Publish to NPM
