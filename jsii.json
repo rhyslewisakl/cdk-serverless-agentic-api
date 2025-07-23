@@ -1,6 +1,6 @@
 {
   "name": "cdk-serverless-agentic-api",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "description": "CDK construct for serverless web applications with CloudFront, S3, Cognito, API Gateway, and Lambda",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -12,6 +12,13 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/rhyslewisakl/cdk-serverless-agentic-api.git"
+  },
+  "jsii": {
+    "outdir": "dist",
+    "tsc": {
+      "outDir": "lib",
+      "rootDir": "src"
+    }
   },
   "targets": {
     "python": {
