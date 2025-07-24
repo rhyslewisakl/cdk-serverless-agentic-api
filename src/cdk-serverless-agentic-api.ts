@@ -183,7 +183,7 @@ export class CDKServerlessAgenticAPI extends Construct {
         COGNITO_DOMAIN: `${this.userPool.userPoolId}.auth.${process.env.AWS_REGION || 'us-east-1'}.amazoncognito.com`,
         API_URL: this.api.url,
         API_VERSION: '1.0.0',
-        AWS_REGION: process.env.AWS_REGION || 'us-east-1'
+        REGION: process.env.AWS_REGION || 'us-east-1'
       }
     });
   }

@@ -25,6 +25,11 @@ test:
 	@echo "Running tests..."
 	npm test
 
+# Run tests without integration tests
+test-no-integration:
+	@echo "Running tests without integration tests..."
+	npm test -- --testNamePattern='^((?!integration).)*$'
+
 # Validate the build
 validate:
 	@echo "Validating the build..."
