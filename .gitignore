@@ -57,6 +57,7 @@ cdk.context.json
 
 # AWS
 .aws/
+.kiro
 
 # Temporary files
 *.tmp
