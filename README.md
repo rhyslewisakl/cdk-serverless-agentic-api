@@ -665,7 +665,9 @@ Types of property 'node' are incompatible.
 
 This is due to a version mismatch between the `constructs` package in your project and the one used by this library. To fix this, you can:
 
-1. Add `"skipLibCheck": true` to your `tsconfig.json` file's `compilerOptions`:
+1. **Use version 0.3.15 or later of this library**, which has a more flexible type definition that avoids this issue.
+
+2. Add `"skipLibCheck": true` to your `tsconfig.json` file's `compilerOptions`:
 
 ```json
 {
@@ -676,13 +678,13 @@ This is due to a version mismatch between the `constructs` package in your proje
 }
 ```
 
-2. Ensure you're using a compatible version of the `constructs` package:
+3. Ensure you're using a compatible version of the `constructs` package:
 
 ```bash
 npm install constructs@^10.0.0
 ```
 
-3. If you're using AWS CDK v2, make sure you're using the correct imports:
+4. If you're using AWS CDK v2, make sure you're using the correct imports:
 
 ```typescript
 import { Construct } from 'constructs';

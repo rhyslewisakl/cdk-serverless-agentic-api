@@ -84,7 +84,7 @@ export class CDKServerlessAgenticAPI extends Construct {
    * @param id The construct ID
    * @param props Configuration properties
    */
-  constructor(scope: Construct, id: string, props?: CDKServerlessAgenticAPIProps) {
+  constructor(scope: any, id: string, props?: CDKServerlessAgenticAPIProps) {
     super(scope, id);
 
     // Initialize internal state
