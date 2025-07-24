@@ -62,3 +62,11 @@ cdk.context.json
 # Temporary files
 *.tmp
 *.temp
+.jsii-temp/
+
+# Research directories
+aws-cdk-repo/
+jsii-repo/
+
+# Package files
+*.tgz
