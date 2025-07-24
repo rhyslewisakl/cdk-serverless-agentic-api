@@ -1,7 +1,6 @@
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
-import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import { Construct } from 'constructs';
 import { ResourceConfig } from './types';
 /**
@@ -30,4 +29,4 @@ export declare function createLambdaFunction(scope: Construct, functionName: str
  * @param constructId The ID of the parent construct
  * @returns The created Lambda function configured for API Gateway
  */
-export declare function createApiLambdaFunction(scope: Construct, resourcePath: string, config: ResourceConfig, userPool: cognito.UserPool, userPoolClient: cognito.UserPoolClient, api: apigateway.RestApi, constructId: string): lambda.Function;
+export declare function createApiLambdaFunction(scope: Construct, resourcePath: string, config: ResourceConfig, userPool: cognito.UserPool, userPoolClient: cognito.UserPoolClient, constructId: string): lambda.Function;

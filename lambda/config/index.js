@@ -117,15 +117,7 @@ exports.handler = async (event) => {
           responseType: 'code'
         }
       },
-      api: {
-        endpoints: [
-          {
-            name: 'api',
-            endpoint: process.env.API_URL,
-            region: region
-          }
-        ]
-      },
+      // API endpoint information removed - frontend should determine this dynamically
       version: process.env.API_VERSION || '1.0.0'
     };
 

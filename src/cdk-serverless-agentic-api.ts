@@ -187,7 +187,7 @@ export class CDKServerlessAgenticAPI extends Construct {
       lambdaSourcePath: path.join(baseLambdaPath, 'config'),
       requiresAuth: false,
       environment: {
-        API_URL: this.api.url,
+
         API_VERSION: '1.0.0'
       }
     });
@@ -235,7 +235,6 @@ export class CDKServerlessAgenticAPI extends Construct {
       config,
       this.userPool,
       this.userPoolClient,
-      this.api,
       this.node.id
     );
 

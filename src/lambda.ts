@@ -60,6 +60,14 @@ export function createLambdaFunction(
     description: `Lambda function for ${functionName} in ${constructId} construct`,
   });
 
+  // Add permission for API Gateway to invoke this Lambda function
+  // Using wildcard to allow any API Gateway in the same account to invoke
+  lambdaFunction.addPermission('ApiGatewayInvokePermission', {
+    principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
+    action: 'lambda:InvokeFunction',
+    sourceArn: `arn:aws:execute-api:*:*:*`,
+  });
+
   return lambdaFunction;
 }
 
@@ -81,14 +89,13 @@ export function createApiLambdaFunction(
   config: ResourceConfig,
   userPool: cognito.UserPool,
   userPoolClient: cognito.UserPoolClient,
-  api: apigateway.RestApi,
   constructId: string
 ): lambda.Function {
   // Generate function name from resource path
   const functionName = generateLambdaFunctionName(resourcePath, config.method);
 
   // Create additional policies for API Gateway integration
-  const additionalPolicies = createApiLambdaPolicies(config, userPool, api);
+  const additionalPolicies = createApiLambdaPolicies(config);
 
   // Add API Gateway specific environment variables
   const apiEnvironment = {
@@ -267,8 +274,6 @@ function generateLambdaFunctionName(resourcePath: string, method: string): strin
  */
 function createApiLambdaPolicies(
   config: ResourceConfig,
-  userPool: cognito.UserPool,
-  api: apigateway.RestApi
 ): iam.PolicyStatement[] {
   const policies: iam.PolicyStatement[] = [];
 
@@ -282,7 +287,7 @@ function createApiLambdaPolicies(
         'cognito-idp:ListUsers',
         'cognito-idp:AdminGetUser',
       ],
-      resources: [userPool.userPoolArn],
+      resources: ["*"],
     }));
 
     // If specific group is required, add group-related permissions
@@ -294,22 +299,10 @@ function createApiLambdaPolicies(
           'cognito-idp:AdminListGroupsForUser',
           'cognito-idp:GetGroup',
         ],
-        resources: [userPool.userPoolArn],
+        resources: ["*"],
       }));
     }
   }
-
-  // Add API Gateway invoke permissions for cross-resource calls
-  policies.push(new iam.PolicyStatement({
-    sid: 'ApiGatewayInvoke',
-    effect: iam.Effect.ALLOW,
-    actions: [
-      'execute-api:Invoke',
-    ],
-    resources: [
-      `${api.arnForExecuteApi()}/*`,
-    ],
-  }));
 
   return policies;
 }

@@ -1,6 +1,6 @@
 {
   "name": "cdk-serverless-agentic-api",
-  "version": "0.3.18",
+  "version": "0.3.20",
   "description": "CDK construct for serverless web applications with CloudFront, S3, Cognito, API Gateway, and Lambda",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

@@ -396,14 +396,7 @@ export function createApiGatewayMethod(
   // Create the method
   const method = resource.addMethod(config.method, integration, methodOptions);
 
-  // Grant API Gateway permission to invoke the Lambda function
-  // Generate a safe permission ID using the resource path and method
-  const permissionId = `ApiGatewayInvoke-${config.method}-${config.path.replace(/[^a-zA-Z0-9]/g, '')}`;
-  lambdaFunction.addPermission(permissionId, {
-    principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
-    action: 'lambda:InvokeFunction',
-    sourceArn: api.arnForExecuteApi(config.method, resource.path),
-  });
+  // Note: Lambda permission is granted in the Lambda function constructor to avoid circular dependency
 
   return method;
 }
