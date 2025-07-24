@@ -44,7 +44,7 @@ tag:
 		exit 1; \
 	fi
 	npm version $(VERSION) --no-git-tag-version
-	git add package.json
+	git add package.json package-lock.json
 	git commit -m "Bump version to $(VERSION)"
 	git tag v$(VERSION)
 	@echo "Tagged version v$(VERSION). To push, run: git push origin main && git push origin v$(VERSION)"
@@ -58,7 +58,7 @@ release: clean install build test validate
 		exit 1; \
 	fi
 	npm version $(VERSION) --no-git-tag-version
-	git add package.json
+	git add package.json package-lock.json
 	git commit -m "Bump version to $(VERSION)"
 	git tag v$(VERSION)
 	@echo "Tagged version v$(VERSION). To push, run: git push origin main && git push origin v$(VERSION)"
