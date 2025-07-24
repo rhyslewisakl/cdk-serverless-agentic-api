@@ -33,6 +33,16 @@ export interface CDKServerlessAgenticAPIProps {
      * @default true
      */
     readonly enableLogging?: boolean;
+    /**
+     * Custom path to the directory containing Lambda function source code for default endpoints
+     * @default - Uses the bundled lambda directory from the package
+     */
+    readonly lambdaSourcePath?: string;
+    /**
+     * Custom path to the directory containing error page HTML files
+     * @default - Uses the bundled error-pages directory from the package
+     */
+    readonly errorPagesPath?: string;
 }
 /**
  * Options for adding a new API resource to the construct

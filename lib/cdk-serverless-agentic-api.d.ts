@@ -59,7 +59,7 @@ export declare class CDKServerlessAgenticAPI extends Construct {
      * @param id The construct ID
      * @param props Configuration properties
      */
-    constructor(scope: Construct, id: string, props?: CDKServerlessAgenticAPIProps);
+    constructor(scope: any, id: string, props?: CDKServerlessAgenticAPIProps);
     /**
      * Creates default health, whoami, and config endpoints
      */

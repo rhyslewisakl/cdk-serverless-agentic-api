@@ -1,4 +1,5 @@
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
@@ -29,15 +30,13 @@ export function createCloudFrontDistribution(
   loggingBucket?: s3.Bucket
 ): cloudfront.Distribution {
   // Create S3 origin for static content
-  // Create S3 origin directly without using origins.S3BucketOrigin
-  const s3Origin = new cloudfront.S3Origin(bucket, {
+  const s3Origin = new origins.S3Origin(bucket, {
     originAccessIdentity: originAccessIdentity,
     originPath: '',
   });
 
   // Create API Gateway origin for /api/* paths
-  // Create API Gateway origin directly without using origins.RestApiOrigin
-  const apiOrigin = new cloudfront.HttpOrigin(`${api.restApiId}.execute-api.${process.env.AWS_REGION || 'us-east-1'}.amazonaws.com`, {
+  const apiOrigin = new origins.HttpOrigin(`${api.restApiId}.execute-api.${process.env.AWS_REGION || 'us-east-1'}.amazonaws.com`, {
     originPath: `/${api.deploymentStage.stageName}`,
   });
 
