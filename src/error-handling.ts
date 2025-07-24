@@ -271,9 +271,14 @@ export function createErrorPages(
   bucket: s3.Bucket,
   constructId: string
 ): cloudfront.ErrorResponse[] {
+  // Get custom error pages path if provided
+  const errorPagesPath = scope instanceof Construct && 
+                        scope.node.tryGetContext('props')?.errorPagesPath || 
+                        'error-pages';
+  
   // Deploy error page assets to S3
   new s3deploy.BucketDeployment(scope, `${constructId}ErrorPages`, {
-    sources: [s3deploy.Source.asset('error-pages')],
+    sources: [s3deploy.Source.asset(errorPagesPath)],
     destinationBucket: bucket,
     destinationKeyPrefix: 'error-pages/',
     cacheControl: [

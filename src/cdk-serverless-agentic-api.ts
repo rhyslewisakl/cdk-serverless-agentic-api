@@ -90,6 +90,9 @@ export class CDKServerlessAgenticAPI extends Construct {
     // Initialize internal state
     this.lambdaFunctions = {};
     this.resourceConfigs = {};
+    
+    // Store props in node context for use in other methods
+    this.node.setContext('props', props);
 
     // Validate props
     if (props?.domainName && !props?.certificateArn) {
@@ -147,11 +150,15 @@ export class CDKServerlessAgenticAPI extends Construct {
    * Creates default health, whoami, and config endpoints
    */
   private createDefaultEndpoints(): void {
+    // Determine the base lambda source path
+    const baseLambdaPath = this.node.tryGetContext('props')?.lambdaSourcePath || 
+                          path.join(__dirname, '../lambda');
+    
     // Create health endpoint
     this.addResource({
       path: '/health',
       method: 'GET',
-      lambdaSourcePath: path.join(__dirname, '../lambda/health'),
+      lambdaSourcePath: path.join(baseLambdaPath, 'health'),
       requiresAuth: false,
       environment: {
         API_VERSION: '1.0.0',
@@ -163,7 +170,7 @@ export class CDKServerlessAgenticAPI extends Construct {
     this.addResource({
       path: '/whoami',
       method: 'GET',
-      lambdaSourcePath: path.join(__dirname, '../lambda/whoami'),
+      lambdaSourcePath: path.join(baseLambdaPath, 'whoami'),
       requiresAuth: true,
       environment: {
         API_VERSION: '1.0.0',
@@ -175,7 +182,7 @@ export class CDKServerlessAgenticAPI extends Construct {
     this.addResource({
       path: '/config',
       method: 'GET',
-      lambdaSourcePath: path.join(__dirname, '../lambda/config'),
+      lambdaSourcePath: path.join(baseLambdaPath, 'config'),
       requiresAuth: false,
       environment: {
         USER_POOL_ID: this.userPool.userPoolId,

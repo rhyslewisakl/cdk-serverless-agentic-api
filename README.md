@@ -339,6 +339,8 @@ Configuration properties for the CDKServerlessAgenticAPI.
 | `userPoolName` | `string` | No | CDK generated name | Custom name for the Cognito User Pool |
 | `apiName` | `string` | No | CDK generated name | Custom name for the API Gateway |
 | `enableLogging` | `boolean` | No | `true` | Enable detailed logging for all components |
+| `lambdaSourcePath` | `string` | No | Bundled lambda directory | Custom path to the directory containing Lambda function source code for default endpoints |
+| `errorPagesPath` | `string` | No | Bundled error-pages directory | Custom path to the directory containing error page HTML files |
 
 ### AddResourceOptions
 
@@ -434,6 +436,54 @@ async function fetchConfig() {
 ```
 
 > **Important**: Always use the config endpoint instead of hardcoding values from CDK outputs. This ensures your frontend application can adapt to changes in the backend infrastructure.
+
+## Customizing Default Resources
+
+The construct comes with bundled Lambda functions and error pages that are used by default. However, you can customize these resources by providing your own paths.
+
+### Custom Lambda Functions
+
+You can provide your own Lambda functions for the default endpoints (health, whoami, config) by specifying the `lambdaSourcePath` property:
+
+```typescript
+const webApp = new CDKServerlessAgenticAPI(this, 'MyWebApp', {
+  lambdaSourcePath: './my-custom-lambda'
+});
+```
+
+Your custom Lambda directory should have the following structure:
+
+```
+my-custom-lambda/
+├── health/
+│   └── index.js
+├── whoami/
+│   └── index.js
+└── config/
+    └── index.js
+```
+
+### Custom Error Pages
+
+You can provide your own error pages by specifying the `errorPagesPath` property:
+
+```typescript
+const webApp = new CDKServerlessAgenticAPI(this, 'MyWebApp', {
+  errorPagesPath: './my-custom-error-pages'
+});
+```
+
+Your custom error pages directory should have the following structure:
+
+```
+my-custom-error-pages/
+├── 400.html
+├── 403.html
+├── 404.html
+└── 500.html
+```
+
+> **Note**: If you don't provide custom paths, the construct will use the bundled Lambda functions and error pages that come with the package.
 
 ## Security Best Practices
 
