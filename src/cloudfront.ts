@@ -37,7 +37,7 @@ export function createCloudFrontDistribution(
 
   // Create API Gateway origin for /api/* paths
   const apiOrigin = new origins.HttpOrigin(`${api.restApiId}.execute-api.${process.env.AWS_REGION || 'us-east-1'}.amazonaws.com`, {
-    originPath: `/${api.deploymentStage.stageName}`,
+    originPath: '',
   });
 
   // Configure SSL certificate if custom domain is provided

@@ -4,7 +4,7 @@
  */
 
 // Import structured logging utilities
-const { createLoggerFromEvent, withPerformanceLogging, MetricsCollector } = require('../../lib/logging');
+const { createLoggerFromEvent, MetricsCollector } = require('./logging');
 
 // Standard CORS headers for responses
 const CORS_HEADERS = {

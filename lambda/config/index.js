@@ -8,8 +8,8 @@
  * It dynamically looks up Cognito resources to avoid circular dependencies.
  */
 
-// Import AWS SDK
-const { CognitoIdentityServiceProvider } = require('aws-sdk');
+// Import AWS SDK v3
+const { CognitoIdentityProviderClient, ListUserPoolsCommand, ListUserPoolClientsCommand } = require('@aws-sdk/client-cognito-identity-provider');
 
 // CORS headers for all responses
 const CORS_HEADERS = {
@@ -25,7 +25,7 @@ const CORS_HEADERS = {
 const region = process.env.AWS_REGION || 'us-east-1';
 
 // Initialize Cognito client
-const cognitoClient = new CognitoIdentityServiceProvider({ region });
+const cognitoClient = new CognitoIdentityProviderClient({ region });
 
 /**
  * Finds the user pool ID by listing user pools and matching by name prefix
@@ -35,7 +35,8 @@ const cognitoClient = new CognitoIdentityServiceProvider({ region });
 async function findUserPoolId(stackName) {
   try {
     // List user pools with a reasonable limit
-    const response = await cognitoClient.listUserPools({ MaxResults: 60 }).promise();
+    const command = new ListUserPoolsCommand({ MaxResults: 60 });
+    const response = await cognitoClient.send(command);
 
     // Find user pool that matches our stack name pattern
     const userPool = response.UserPools.find(pool =>
@@ -58,10 +59,11 @@ async function findUserPoolId(stackName) {
 async function findUserPoolClientId(userPoolId) {
   try {
     // List clients for the user pool
-    const response = await cognitoClient.listUserPoolClients({
+    const command = new ListUserPoolClientsCommand({
       UserPoolId: userPoolId,
       MaxResults: 60
-    }).promise();
+    });
+    const response = await cognitoClient.send(command);
 
     // Get the first client (typically there's only one for our use case)
     const client = response.UserPoolClients[0];

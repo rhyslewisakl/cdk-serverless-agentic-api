@@ -51,7 +51,6 @@ export function createLambdaFunction(
     },
     timeout: Duration.seconds(30),
     memorySize: 256,
-    reservedConcurrentExecutions: 100,
     deadLetterQueueEnabled: true,
     retryAttempts: 2,
     architecture: lambda.Architecture.ARM_64,
@@ -61,11 +60,11 @@ export function createLambdaFunction(
   });
 
   // Add permission for API Gateway to invoke this Lambda function
-  // Using wildcard to allow any API Gateway in the same account to invoke
+  // Using account and region from CDK context to allow any API Gateway in the same account to invoke
   lambdaFunction.addPermission('ApiGatewayInvokePermission', {
     principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
     action: 'lambda:InvokeFunction',
-    sourceArn: `arn:aws:execute-api:*:*:*`,
+    sourceArn: `arn:aws:execute-api:${scope.node.tryGetContext('aws:cdk:region') || process.env.CDK_DEFAULT_REGION || ''}:${scope.node.tryGetContext('aws:cdk:account') || process.env.CDK_DEFAULT_ACCOUNT}:*`,
   });
 
   return lambdaFunction;
