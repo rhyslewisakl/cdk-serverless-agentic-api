@@ -131,7 +131,11 @@ export class CDKServerlessAgenticAPI extends Construct {
       loggingBucket
     );
 
+    // Create default endpoints first to populate lambdaFunctions registry
+    this.createDefaultEndpoints();
+
     // Configure monitoring and alarms if logging is enabled
+    // This must come after createDefaultEndpoints() to avoid circular dependency
     if (props?.enableLogging !== false) {
       createMonitoringResources(
         this as any as Construct,
@@ -141,9 +145,6 @@ export class CDKServerlessAgenticAPI extends Construct {
         id
       );
     }
-
-    // Create default endpoints
-    this.createDefaultEndpoints();
   }
 
   /**
@@ -179,20 +180,28 @@ export class CDKServerlessAgenticAPI extends Construct {
     });
     
     // Create config endpoint for frontend configuration
-    this.addResource({
+    // Note: Cognito values are now looked up dynamically to avoid circular dependencies
+    const configLambda = this.addResource({
       path: '/config',
       method: 'GET',
       lambdaSourcePath: path.join(baseLambdaPath, 'config'),
       requiresAuth: false,
       environment: {
-        USER_POOL_ID: this.userPool.userPoolId,
-        USER_POOL_CLIENT_ID: this.userPoolClient.userPoolClientId,
-        COGNITO_DOMAIN: `${this.userPool.userPoolId}.auth.${process.env.AWS_REGION || 'us-east-1'}.amazoncognito.com`,
         API_URL: this.api.url,
-        API_VERSION: '1.0.0',
-        REGION: process.env.AWS_REGION || 'us-east-1'
+        API_VERSION: '1.0.0'
       }
     });
+    
+    // Add permissions to list Cognito resources
+    configLambda.addToRolePolicy(new iam.PolicyStatement({
+      sid: 'CognitoListAccess',
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'cognito-idp:ListUserPools',
+        'cognito-idp:ListUserPoolClients'
+      ],
+      resources: ['*'] // Scope is limited to listing operations only
+    }));
   }
 
   /**

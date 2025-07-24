@@ -1,0 +1,47 @@
+## Customizing Default Resources
+
+The construct comes with bundled Lambda functions and error pages that are used by default. However, you can customize these resources by providing your own paths.
+
+### Custom Lambda Functions
+
+You can provide your own Lambda functions for the default endpoints (health, whoami, config) by specifying the `lambdaSourcePath` property:
+
+```typescript
+const webApp = new CDKServerlessAgenticAPI(this, 'MyWebApp', {
+  lambdaSourcePath: './my-custom-lambda'
+});
+```
+
+Your custom Lambda directory should have the following structure:
+
+```
+my-custom-lambda/
+├── health/
+│   └── index.js
+├── whoami/
+│   └── index.js
+└── config/
+    └── index.js
+```
+
+### Custom Error Pages
+
+You can provide your own error pages by specifying the `errorPagesPath` property:
+
+```typescript
+const webApp = new CDKServerlessAgenticAPI(this, 'MyWebApp', {
+  errorPagesPath: './my-custom-error-pages'
+});
+```
+
+Your custom error pages directory should have the following structure:
+
+```
+my-custom-error-pages/
+├── 400.html
+├── 403.html
+├── 404.html
+└── 500.html
+```
+
+> **Note**: If you don't provide custom paths, the construct will use the bundled Lambda functions and error pages that come with the package.

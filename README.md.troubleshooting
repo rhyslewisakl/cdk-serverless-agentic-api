@@ -1,0 +1,46 @@
+## Troubleshooting
+
+### TypeScript Errors with Constructs
+
+If you encounter TypeScript errors like this:
+
+```
+TS2345: Argument of type 'this' is not assignable to parameter of type 'Construct'.
+Type 'YourStack' is not assignable to type 'Construct'.
+Types of property 'node' are incompatible.
+```
+
+This is due to a version mismatch between the `constructs` package in your project and the one used by this library. To fix this, you can:
+
+1. Add `"skipLibCheck": true` to your `tsconfig.json` file's `compilerOptions`:
+
+```json
+{
+  "compilerOptions": {
+    // other options...
+    "skipLibCheck": true
+  }
+}
+```
+
+2. Ensure you're using a compatible version of the `constructs` package:
+
+```bash
+npm install constructs@^10.0.0
+```
+
+3. If you're using AWS CDK v2, make sure you're using the correct imports:
+
+```typescript
+import { Construct } from 'constructs';
+import * as cdk from 'aws-cdk-lib';
+import { CDKServerlessAgenticAPI } from 'cdk-serverless-agentic-api';
+
+export class MyStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+    
+    const api = new CDKServerlessAgenticAPI(this, 'AgenticAPI');
+  }
+}
+```

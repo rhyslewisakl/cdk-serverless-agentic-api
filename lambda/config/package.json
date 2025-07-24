@@ -5,5 +5,7 @@
   "main": "index.js",
   "author": "Rhys Lewis",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "aws-sdk": "^2.1502.0"
+  }
 }

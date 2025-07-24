@@ -8,6 +8,7 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
+import * as path from 'path';
 
 /**
  * Standard error response structure for Lambda functions
@@ -274,7 +275,7 @@ export function createErrorPages(
   // Get custom error pages path if provided
   const errorPagesPath = scope instanceof Construct && 
                         scope.node.tryGetContext('props')?.errorPagesPath || 
-                        'error-pages';
+                        path.join(__dirname, '../error-pages');
   
   // Deploy error page assets to S3
   new s3deploy.BucketDeployment(scope, `${constructId}ErrorPages`, {

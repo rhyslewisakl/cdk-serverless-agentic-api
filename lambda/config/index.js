@@ -5,7 +5,11 @@
  * such as Cognito User Pool ID, Client ID, and API endpoints.
  * 
  * This endpoint is unauthenticated to allow frontend setup before authentication.
+ * It dynamically looks up Cognito resources to avoid circular dependencies.
  */
+
+// Import AWS SDK
+const { CognitoIdentityServiceProvider } = require('aws-sdk');
 
 // CORS headers for all responses
 const CORS_HEADERS = {
@@ -16,6 +20,57 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Credentials': 'true',
   'Access-Control-Max-Age': '86400'
 };
+
+// Get the AWS region
+const region = process.env.AWS_REGION || 'us-east-1';
+
+// Initialize Cognito client
+const cognitoClient = new CognitoIdentityServiceProvider({ region });
+
+/**
+ * Finds the user pool ID by listing user pools and matching by name prefix
+ * @param {string} stackName - The stack name to match against user pool names
+ * @returns {Promise<string|null>} - The user pool ID or null if not found
+ */
+async function findUserPoolId(stackName) {
+  try {
+    // List user pools with a reasonable limit
+    const response = await cognitoClient.listUserPools({ MaxResults: 60 }).promise();
+
+    // Find user pool that matches our stack name pattern
+    const userPool = response.UserPools.find(pool =>
+      pool.Name.startsWith(stackName) ||
+      pool.Name.includes(stackName)
+    );
+
+    return userPool ? userPool.Id : null;
+  } catch (error) {
+    console.error('Error finding user pool:', error);
+    return null;
+  }
+}
+
+/**
+ * Finds the user pool client ID for a given user pool
+ * @param {string} userPoolId - The user pool ID
+ * @returns {Promise<string|null>} - The client ID or null if not found
+ */
+async function findUserPoolClientId(userPoolId) {
+  try {
+    // List clients for the user pool
+    const response = await cognitoClient.listUserPoolClients({
+      UserPoolId: userPoolId,
+      MaxResults: 60
+    }).promise();
+
+    // Get the first client (typically there's only one for our use case)
+    const client = response.UserPoolClients[0];
+    return client ? client.ClientId : null;
+  } catch (error) {
+    console.error('Error finding user pool client:', error);
+    return null;
+  }
+}
 
 exports.handler = async (event) => {
   // Handle OPTIONS requests for CORS
@@ -40,14 +95,22 @@ exports.handler = async (event) => {
   }
 
   try {
-    // Get configuration from environment variables
+    // Extract stack name from Lambda function ARN or use a default
+    const stackName = process.env.AWS_LAMBDA_FUNCTION_NAME?.split('-').slice(0, -2).join('-') || 'ServerlessAgenticApi';
+
+    // Look up Cognito resources dynamically
+    const userPoolId = await findUserPoolId(stackName);
+    const userPoolClientId = userPoolId ? await findUserPoolClientId(userPoolId) : null;
+    const cognitoDomain = userPoolId ? `${userPoolId}.auth.${region}.amazoncognito.com` : null;
+
+    // Build configuration
     const config = {
       auth: {
-        region: process.env.AWS_REGION || 'us-east-1',
-        userPoolId: process.env.USER_POOL_ID,
-        userPoolWebClientId: process.env.USER_POOL_CLIENT_ID,
+        region: region,
+        userPoolId: userPoolId,
+        userPoolWebClientId: userPoolClientId,
         oauth: {
-          domain: process.env.COGNITO_DOMAIN,
+          domain: cognitoDomain,
           scope: ['email', 'profile', 'openid'],
           redirectSignIn: process.env.REDIRECT_URL || '',
           redirectSignOut: process.env.REDIRECT_URL || '',
@@ -59,7 +122,7 @@ exports.handler = async (event) => {
           {
             name: 'api',
             endpoint: process.env.API_URL,
-            region: process.env.AWS_REGION || 'us-east-1'
+            region: region
           }
         ]
       },
@@ -73,7 +136,7 @@ exports.handler = async (event) => {
     };
   } catch (error) {
     console.error('Error generating config:', error);
-    
+
     return {
       statusCode: 500,
       headers: CORS_HEADERS,
