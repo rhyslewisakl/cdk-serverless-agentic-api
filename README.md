@@ -11,6 +11,8 @@ A CDK construct that simplifies the creation of serverless web applications on A
 
 The CDK Serverless Agentic API is a high-level CDK construct that helps you deploy a complete serverless web application infrastructure on AWS with minimal configuration. It combines several AWS services into a cohesive architecture:
 
+> **Important Note for TypeScript Users**: If you encounter TypeScript errors related to incompatible `Construct` types, you may need to ensure your project uses the same version of the `constructs` package as this library. Add `"skipLibCheck": true` to your `tsconfig.json` file's `compilerOptions` to resolve these issues.
+
 - **CloudFront** for global content delivery with SSL/TLS
 - **S3** for static website hosting
 - **Cognito** for user authentication and management
@@ -331,29 +333,29 @@ For complete API documentation, see [API_REFERENCE.md](./API_REFERENCE.md)
 
 Configuration properties for the CDKServerlessAgenticAPI.
 
-| Property | Type | Required | Default | Description |
-|----------|------|----------|---------|-------------|
-| `domainName` | `string` | No | CloudFront generated domain | Custom domain name for the CloudFront distribution |
-| `certificateArn` | `string` | Only if domainName is provided | - | ARN of the SSL certificate for the custom domain |
-| `bucketName` | `string` | No | CDK generated name | Custom name for the S3 bucket |
-| `userPoolName` | `string` | No | CDK generated name | Custom name for the Cognito User Pool |
-| `apiName` | `string` | No | CDK generated name | Custom name for the API Gateway |
-| `enableLogging` | `boolean` | No | `true` | Enable detailed logging for all components |
-| `lambdaSourcePath` | `string` | No | Bundled lambda directory | Custom path to the directory containing Lambda function source code for default endpoints |
-| `errorPagesPath` | `string` | No | Bundled error-pages directory | Custom path to the directory containing error page HTML files |
+| Property           | Type      | Required                       | Default                       | Description                                                                               |
+| ------------------ | --------- | ------------------------------ | ----------------------------- | ----------------------------------------------------------------------------------------- |
+| `domainName`       | `string`  | No                             | CloudFront generated domain   | Custom domain name for the CloudFront distribution                                        |
+| `certificateArn`   | `string`  | Only if domainName is provided | -                             | ARN of the SSL certificate for the custom domain                                          |
+| `bucketName`       | `string`  | No                             | CDK generated name            | Custom name for the S3 bucket                                                             |
+| `userPoolName`     | `string`  | No                             | CDK generated name            | Custom name for the Cognito User Pool                                                     |
+| `apiName`          | `string`  | No                             | CDK generated name            | Custom name for the API Gateway                                                           |
+| `enableLogging`    | `boolean` | No                             | `true`                        | Enable detailed logging for all components                                                |
+| `lambdaSourcePath` | `string`  | No                             | Bundled lambda directory      | Custom path to the directory containing Lambda function source code for default endpoints |
+| `errorPagesPath`   | `string`  | No                             | Bundled error-pages directory | Custom path to the directory containing error page HTML files                             |
 
 ### AddResourceOptions
 
 Options for adding a new API resource to the construct.
 
-| Property | Type | Required | Default | Description |
-|----------|------|----------|---------|-------------|
-| `path` | `string` | Yes | - | The API path for the resource (e.g., '/users', '/products') |
-| `method` | `string` | No | `'GET'` | HTTP method for the resource |
-| `lambdaSourcePath` | `string` | Yes | - | Path to the directory containing the Lambda function source code |
-| `requiresAuth` | `boolean` | No | `false` | Whether the resource requires authentication |
-| `cognitoGroup` | `string` | No | - | Cognito group required to access this resource |
-| `environment` | `{ [key: string]: string }` | No | - | Environment variables to pass to the Lambda function |
+| Property           | Type                        | Required | Default | Description                                                      |
+| ------------------ | --------------------------- | -------- | ------- | ---------------------------------------------------------------- |
+| `path`             | `string`                    | Yes      | -       | The API path for the resource (e.g., '/users', '/products')      |
+| `method`           | `string`                    | No       | `'GET'` | HTTP method for the resource                                     |
+| `lambdaSourcePath` | `string`                    | Yes      | -       | Path to the directory containing the Lambda function source code |
+| `requiresAuth`     | `boolean`                   | No       | `false` | Whether the resource requires authentication                     |
+| `cognitoGroup`     | `string`                    | No       | -       | Cognito group required to access this resource                   |
+| `environment`      | `{ [key: string]: string }` | No       | -       | Environment variables to pass to the Lambda function             |
 
 ## Lambda Function Structure
 
@@ -648,6 +650,53 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+## Troubleshooting
+
+### TypeScript Errors with Constructs
+
+If you encounter TypeScript errors like this:
+
+```
+TS2345: Argument of type 'this' is not assignable to parameter of type 'Construct'.
+Type 'YourStack' is not assignable to type 'Construct'.
+Types of property 'node' are incompatible.
+```
+
+This is due to a version mismatch between the `constructs` package in your project and the one used by this library. To fix this, you can:
+
+1. Add `"skipLibCheck": true` to your `tsconfig.json` file's `compilerOptions`:
+
+```json
+{
+  "compilerOptions": {
+    // other options...
+    "skipLibCheck": true
+  }
+}
+```
+
+2. Ensure you're using a compatible version of the `constructs` package:
+
+```bash
+npm install constructs@^10.0.0
+```
+
+3. If you're using AWS CDK v2, make sure you're using the correct imports:
+
+```typescript
+import { Construct } from 'constructs';
+import * as cdk from 'aws-cdk-lib';
+import { CDKServerlessAgenticAPI } from 'cdk-serverless-agentic-api';
+
+export class MyStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+    
+    const api = new CDKServerlessAgenticAPI(this, 'AgenticAPI');
+  }
+}
+```
 
 ## License
 

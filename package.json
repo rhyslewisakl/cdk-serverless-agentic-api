@@ -1,6 +1,6 @@
 {
   "name": "cdk-serverless-agentic-api",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "description": "CDK construct for serverless web applications with CloudFront, S3, Cognito, API Gateway, and Lambda",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -60,6 +60,14 @@
   "peerDependencies": {
     "aws-cdk-lib": "^2.0.0",
     "constructs": "^10.0.0"
+  },
+  "peerDependenciesMeta": {
+    "aws-cdk-lib": {
+      "optional": false
+    },
+    "constructs": {
+      "optional": false
+    }
   },
   "files": [
     "lib/**/*.js",
