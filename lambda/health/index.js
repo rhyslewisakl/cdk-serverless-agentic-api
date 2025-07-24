@@ -69,27 +69,27 @@ function withErrorHandling(handler) {
     const logger = createLoggerFromEvent(event, 'health-api');
     const metrics = new MetricsCollector(logger);
     const startTime = Date.now();
-    
+
     try {
       logger.logRequestStart(event);
-      
+
       const result = await handler(event, context, logger, metrics);
-      
+
       const duration = Date.now() - startTime;
       const responseSize = result.body ? Buffer.byteLength(result.body, 'utf8') : 0;
-      
+
       logger.logRequestEnd(result.statusCode, duration, responseSize);
       metrics.recordResponseTime('/api/health', event.httpMethod, duration, result.statusCode);
-      
+
       return result;
-      
+
     } catch (error) {
       const duration = Date.now() - startTime;
       const requestId = context?.awsRequestId;
-      
+
       logger.error('Unhandled error in health endpoint', error, { duration });
       metrics.recordError(error.name || 'UnknownError', '/api/health', event.httpMethod);
-      
+
       return createErrorResponse(
         500,
         'Internal Server Error',
@@ -118,13 +118,13 @@ const healthHandler = async (event, context, logger, metrics) => {
 
   // Validate HTTP method
   if (event.httpMethod !== 'GET') {
-    logger.warn('Invalid HTTP method attempted', { 
+    logger.warn('Invalid HTTP method attempted', {
       method: event.httpMethod,
       allowedMethods: ['GET', 'OPTIONS']
     });
-    
+
     metrics.recordError('MethodNotAllowed', '/api/health', event.httpMethod);
-    
+
     return createErrorResponse(
       405,
       'Method Not Allowed',
@@ -138,7 +138,7 @@ const healthHandler = async (event, context, logger, metrics) => {
   // Perform basic health checks
   const memoryUsage = process.memoryUsage();
   const uptime = process.uptime();
-  
+
   const healthData = {
     status: 'healthy',
     version: process.env.API_VERSION || '1.0.0',
@@ -172,7 +172,7 @@ const healthHandler = async (event, context, logger, metrics) => {
   // Log health check metrics
   metrics.recordMetric('MemoryUsage', memoryUsage.heapUsed, 'Bytes');
   metrics.recordMetric('Uptime', uptime, 'Seconds');
-  
+
   logger.info('Health check completed successfully', {
     memoryUsed: memoryUsage.heapUsed,
     memoryTotal: memoryUsage.heapTotal,
