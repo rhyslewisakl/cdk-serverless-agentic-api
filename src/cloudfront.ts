@@ -1,5 +1,4 @@
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
-import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
@@ -30,25 +29,27 @@ export function createCloudFrontDistribution(
   loggingBucket?: s3.Bucket
 ): cloudfront.Distribution {
   // Create S3 origin for static content
-  const s3Origin = origins.S3BucketOrigin.withOriginAccessIdentity(bucket, {
+  // Create S3 origin directly without using origins.S3BucketOrigin
+  const s3Origin = new cloudfront.S3Origin(bucket, {
     originAccessIdentity: originAccessIdentity,
     originPath: '',
   });
 
   // Create API Gateway origin for /api/* paths
-  const apiOrigin = new origins.RestApiOrigin(api, {
-    //originPath: '/prod', // API Gateway stage path
+  // Create API Gateway origin directly without using origins.RestApiOrigin
+  const apiOrigin = new cloudfront.HttpOrigin(`${api.restApiId}.execute-api.${process.env.AWS_REGION || 'us-east-1'}.amazonaws.com`, {
+    originPath: `/${api.deploymentStage.stageName}`,
   });
 
   // Configure SSL certificate if custom domain is provided
-  const certificate = props?.certificateArn 
+  const certificate = props?.certificateArn
     ? acm.Certificate.fromCertificateArn(scope, 'Certificate', props.certificateArn)
     : undefined;
 
   // Create CloudFront distribution
   const distribution = new cloudfront.Distribution(scope, 'Distribution', {
     comment: `CloudFront distribution for ${id} serverless web application`,
-    
+
     // Configure default behavior for static content (S3)
     defaultBehavior: {
       origin: s3Origin,
@@ -130,7 +131,7 @@ export function createResponseHeadersPolicy(
   return new cloudfront.ResponseHeadersPolicy(scope, 'StaticContentResponseHeadersPolicy', {
     responseHeadersPolicyName: `${id}-static-headers`,
     comment: 'Security headers for static content',
-    
+
     // Configure security headers
     securityHeadersBehavior: {
       contentTypeOptions: {
@@ -190,7 +191,7 @@ export function createApiResponseHeadersPolicy(
   return new cloudfront.ResponseHeadersPolicy(scope, 'ApiResponseHeadersPolicy', {
     responseHeadersPolicyName: `${id}-api-headers`,
     comment: 'Headers for API Gateway responses',
-    
+
     // Configure minimal security headers for API responses
     securityHeadersBehavior: {
       contentTypeOptions: {
