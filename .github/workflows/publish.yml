@@ -27,10 +27,16 @@ jobs:
           # Get the version from the tag
           VERSION=${{ steps.get_version.outputs.VERSION }}
           
-          # Update version in package.json
-          npm version $VERSION --no-git-tag-version
+          # Get current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
           
-          echo "Updated version to $VERSION"
+          # Update version in package.json only if different
+          if [ "$VERSION" != "$CURRENT_VERSION" ]; then
+            npm version $VERSION --no-git-tag-version
+            echo "Updated version from $CURRENT_VERSION to $VERSION"
+          else
+            echo "Version is already set to $VERSION, no update needed"
+          fi
 
       - name: Install dependencies
         run: npm ci
