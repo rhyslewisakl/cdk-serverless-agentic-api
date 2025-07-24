@@ -4,6 +4,8 @@ A CDK construct that simplifies the creation of serverless web applications on A
 
 [![npm version](https://badge.fury.io/js/cdk-serverless-agentic-api.svg)](https://badge.fury.io/js/cdk-serverless-agentic-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build and Publish](https://github.com/rhyslewisakl/cdk-serverless-agentic-api/actions/workflows/publish.yml/badge.svg)](https://github.com/rhyslewisakl/cdk-serverless-agentic-api/actions/workflows/publish.yml)
+[![constructs.dev](https://img.shields.io/badge/constructs.dev-published-blue)](https://constructs.dev/packages/cdk-serverless-agentic-api)
 
 ## Overview
 
@@ -77,8 +79,39 @@ export class MyStack extends Stack {
 
 ## Installation
 
+### TypeScript / JavaScript
+
 ```bash
+# npm
 npm install cdk-serverless-agentic-api
+
+# yarn
+yarn add cdk-serverless-agentic-api
+
+# pnpm
+pnpm add cdk-serverless-agentic-api
+```
+
+### Python
+
+```bash
+pip install cdk-serverless-agentic-api
+```
+
+### Java
+
+```xml
+<dependency>
+  <groupId>nz.rhyslewis</groupId>
+  <artifactId>cdk-serverless-agentic-api</artifactId>
+  <version>[version]</version>
+</dependency>
+```
+
+### .NET
+
+```bash
+dotnet add package NZRhysLewis.CdkServerlessAgenticApi
 ```
 
 ## Project Structure
