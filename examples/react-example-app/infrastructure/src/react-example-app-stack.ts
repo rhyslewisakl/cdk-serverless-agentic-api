@@ -41,7 +41,7 @@ export class ReactExampleAppStack extends cdk.Stack {
     });
 
     // Add DynamoDB table information as environment variables to existing Lambda functions
-    Object.values(webApp.lambdaFunctions).forEach((lambdaEntry) => {
+    Object.values(webApp.lambdaFunctions).forEach((lambdaEntry: any) => {
       const lambdaFunction = lambdaEntry.function;
       lambdaFunction.addEnvironment('USER_ITEMS_TABLE_NAME', userItemsTable.tableName);
       lambdaFunction.addEnvironment('USER_ITEMS_GSI_NAME', 'userId-createdAt-index');

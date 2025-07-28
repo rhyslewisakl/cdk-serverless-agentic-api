@@ -10,13 +10,19 @@ import {
   Typography,
   Link,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { LoginForm } from '../auth/LoginForm';
 
 /**
  * Login page component that wraps the LoginForm
  */
 export const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleSwitchToRegister = () => {
+    navigate('/register');
+  };
+
   return (
     <Container component="main" maxWidth="sm">
       <Box
@@ -44,7 +50,7 @@ export const LoginPage: React.FC = () => {
             Welcome back! Please sign in to your account.
           </Typography>
           
-          <LoginForm />
+          <LoginForm onSwitchToRegister={handleSwitchToRegister} />
           
           <Box sx={{ mt: 3, textAlign: 'center' }}>
             <Typography variant="body2">

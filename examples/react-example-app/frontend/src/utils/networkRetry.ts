@@ -112,7 +112,7 @@ export async function retryWithBackoff<T>(
           type: 'retry_attempt',
           attempt,
           maxRetries,
-          error: error.message,
+          error: error instanceof Error ? error.message : String(error),
         },
         'warning'
       );
@@ -135,7 +135,7 @@ export async function retryWithBackoff<T>(
       type: 'retry_exhausted',
       attempts,
       maxRetries,
-      finalError: lastError?.message,
+      finalError: lastError instanceof Error ? lastError.message : String(lastError),
     },
     'error'
   );
@@ -205,4 +205,4 @@ export class NetworkRetryService {
 export const networkRetryService = new NetworkRetryService();
 
 // Export utility functions
-export { retryWithBackoff, defaultRetryCondition };
+export { defaultRetryCondition };

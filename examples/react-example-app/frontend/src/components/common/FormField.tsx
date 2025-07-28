@@ -337,7 +337,6 @@ export const FormField: React.FC<FormFieldProps> = ({
       {validationState.isValidating && (
         <Fade in={true}>
           <LinearProgress
-            size="small"
             sx={{
               mt: 0.5,
               height: 2,
