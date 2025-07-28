@@ -1,0 +1,12 @@
+{
+  "name": "auth-lambda",
+  "version": "1.0.0",
+  "description": "Lambda functions for authentication operations",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.0"
+  }
+}
