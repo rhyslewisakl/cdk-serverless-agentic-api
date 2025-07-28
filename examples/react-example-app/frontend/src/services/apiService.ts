@@ -268,17 +268,21 @@ class ApiService {
    * Get application configuration
    */
   async getConfig(): Promise<AuthConfig> {
+    console.log('[ApiService] getConfig() called, making request to:', API_ENDPOINTS.CONFIG);
     try {
+      console.log('[ApiService] Calling this.get() for config...');
       const config = await this.get<AuthConfig>(API_ENDPOINTS.CONFIG);
+      console.log('[ApiService] Config received from API:', config);
       
       // Update base URL if provided in config
       if (config.apiEndpoint) {
+        console.log('[ApiService] Updating base URL to:', config.apiEndpoint);
         this.updateBaseURL(config.apiEndpoint);
       }
       
       return config;
     } catch (error) {
-      console.error('Failed to get config:', error);
+      console.error('[ApiService] Failed to get config:', error);
       
       // Return a default config for development/testing
       const defaultConfig: AuthConfig = {
@@ -288,7 +292,7 @@ class ApiService {
         apiEndpoint: '',
       };
       
-      console.warn('Using default configuration for development');
+      console.warn('[ApiService] Using default configuration for development:', defaultConfig);
       return defaultConfig;
     }
   }

@@ -16,19 +16,23 @@ class AuthService {
    * Initialize Amplify configuration
    */
   async initialize(): Promise<void> {
+    console.log('[AuthService] initialize() called, isConfigured:', this.isConfigured);
     if (this.isConfigured) return;
 
     try {
+      console.log('[AuthService] Getting configuration from API...');
       // Get configuration from the API
       this.config = await apiService.getConfig();
+      console.log('[AuthService] Config received:', this.config);
       
       // Skip Amplify configuration if using development config
       if (this.config.userPoolId === 'development') {
-        console.warn('Skipping Amplify configuration in development mode');
+        console.warn('[AuthService] Skipping Amplify configuration in development mode');
         this.isConfigured = true;
         return;
       }
       
+      console.log('[AuthService] Configuring Amplify with config:', this.config);
       // Configure Amplify
       Amplify.configure({
         Auth: {
@@ -39,9 +43,10 @@ class AuthService {
         },
       });
 
+      console.log('[AuthService] Amplify configured successfully');
       this.isConfigured = true;
     } catch (error) {
-      console.error('Failed to initialize auth service:', error);
+      console.error('[AuthService] Failed to initialize auth service:', error);
       // Don't throw error, just mark as configured to prevent infinite loops
       this.isConfigured = true;
     }
@@ -51,7 +56,9 @@ class AuthService {
    * Ensure Amplify is configured before operations
    */
   private async ensureConfigured(): Promise<void> {
+    console.log('[AuthService] ensureConfigured() called, isConfigured:', this.isConfigured);
     if (!this.isConfigured) {
+      console.log('[AuthService] Not configured, calling initialize()');
       await this.initialize();
     }
   }
@@ -163,16 +170,20 @@ class AuthService {
    * Get current authenticated user
    */
   async getCurrentUser(): Promise<AuthUser | null> {
+    console.log('[AuthService] getCurrentUser() called');
     await this.ensureConfigured();
 
     try {
       // Check if we're in development mode using cached config
+      console.log('[AuthService] Checking config for development mode:', this.config);
       if (this.config?.userPoolId === 'development') {
-        console.log('Development mode: no authenticated user');
+        console.log('[AuthService] Development mode: no authenticated user');
         return null;
       }
       
+      console.log('[AuthService] Calling Amplify getCurrentUser()');
       const user = await getCurrentUser();
+      console.log('[AuthService] Amplify user received:', user);
       
       // Transform Amplify user to our AuthUser type
       const authUser: AuthUser = {
@@ -182,9 +193,10 @@ class AuthService {
         attributes: user.signInDetails || {},
       };
 
+      console.log('[AuthService] Transformed user:', authUser);
       return authUser;
     } catch (error: any) {
-      console.error('Get current user error:', error);
+      console.error('[AuthService] Get current user error:', error);
       return null;
     }
   }

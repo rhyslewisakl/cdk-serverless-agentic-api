@@ -82,14 +82,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        console.log('[AuthContext] Starting authentication initialization');
         dispatch({ type: 'AUTH_START' });
+        
+        console.log('[AuthContext] Calling authService.getCurrentUser()');
         const user = await authService.getCurrentUser();
+        
         if (user) {
+          console.log('[AuthContext] User found:', user);
           dispatch({ type: 'AUTH_SUCCESS', payload: user });
         } else {
+          console.log('[AuthContext] No authenticated user found');
           dispatch({ type: 'AUTH_FAILURE', payload: 'No authenticated user found' });
         }
       } catch (error) {
+        console.error('[AuthContext] Authentication initialization error:', error);
         dispatch({ type: 'AUTH_FAILURE', payload: getErrorMessage(error) });
       }
     };
