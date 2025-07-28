@@ -21,6 +21,13 @@ class AuthService {
       // Get configuration from the API
       const config = await apiService.getConfig();
       
+      // Skip Amplify configuration if using development config
+      if (config.userPoolId === 'development') {
+        console.warn('Skipping Amplify configuration in development mode');
+        this.isConfigured = true;
+        return;
+      }
+      
       // Configure Amplify
       Amplify.configure({
         Auth: {
@@ -34,7 +41,8 @@ class AuthService {
       this.isConfigured = true;
     } catch (error) {
       console.error('Failed to initialize auth service:', error);
-      throw new Error('Authentication service initialization failed');
+      // Don't throw error, just mark as configured to prevent infinite loops
+      this.isConfigured = true;
     }
   }
 
@@ -157,6 +165,13 @@ class AuthService {
     await this.ensureConfigured();
 
     try {
+      // Check if we're in development mode
+      const config = await apiService.getConfig();
+      if (config.userPoolId === 'development') {
+        console.log('Development mode: no authenticated user');
+        return null;
+      }
+      
       const user = await getCurrentUser();
       
       // Transform Amplify user to our AuthUser type

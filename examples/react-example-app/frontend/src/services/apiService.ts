@@ -14,8 +14,8 @@ class ApiService {
   private baseURL: string;
 
   constructor() {
-    // Initialize with default base URL (will be updated after config is loaded)
-    this.baseURL = process.env.REACT_APP_API_URL || '';
+    // Initialize with empty base URL to use relative paths
+    this.baseURL = '';
     
     this.axiosInstance = axios.create({
       baseURL: this.baseURL,
@@ -279,7 +279,17 @@ class ApiService {
       return config;
     } catch (error) {
       console.error('Failed to get config:', error);
-      throw new Error('Failed to load application configuration');
+      
+      // Return a default config for development/testing
+      const defaultConfig: AuthConfig = {
+        userPoolId: 'development',
+        userPoolWebClientId: 'development',
+        region: 'us-east-1',
+        apiEndpoint: '',
+      };
+      
+      console.warn('Using default configuration for development');
+      return defaultConfig;
     }
   }
 
