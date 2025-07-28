@@ -10,6 +10,7 @@ import { apiService } from './apiService';
 
 class AuthService {
   private isConfigured = false;
+  private config: AuthConfig | null = null;
 
   /**
    * Initialize Amplify configuration
@@ -19,10 +20,10 @@ class AuthService {
 
     try {
       // Get configuration from the API
-      const config = await apiService.getConfig();
+      this.config = await apiService.getConfig();
       
       // Skip Amplify configuration if using development config
-      if (config.userPoolId === 'development') {
+      if (this.config.userPoolId === 'development') {
         console.warn('Skipping Amplify configuration in development mode');
         this.isConfigured = true;
         return;
@@ -32,8 +33,8 @@ class AuthService {
       Amplify.configure({
         Auth: {
           Cognito: {
-            userPoolId: config.userPoolId,
-            userPoolClientId: config.userPoolWebClientId,
+            userPoolId: this.config.userPoolId,
+            userPoolClientId: this.config.userPoolWebClientId,
           },
         },
       });
@@ -165,9 +166,8 @@ class AuthService {
     await this.ensureConfigured();
 
     try {
-      // Check if we're in development mode
-      const config = await apiService.getConfig();
-      if (config.userPoolId === 'development') {
+      // Check if we're in development mode using cached config
+      if (this.config?.userPoolId === 'development') {
         console.log('Development mode: no authenticated user');
         return null;
       }
