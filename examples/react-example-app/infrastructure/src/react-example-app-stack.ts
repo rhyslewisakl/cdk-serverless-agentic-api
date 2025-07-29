@@ -55,7 +55,7 @@ export class ReactExampleAppStack extends cdk.Stack {
       requiresAuth: true,
       environment: {
         USER_ITEMS_TABLE_NAME: userItemsTable.tableName,
-        USER_ITEMS_GSI_NAME: 'UserItemsGSI'
+        USER_ITEMS_GSI_NAME: 'userId-createdAt-index'
       }
     });
 
