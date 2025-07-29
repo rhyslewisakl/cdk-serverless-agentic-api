@@ -35,10 +35,13 @@ class ApiService {
     // Request interceptor
     this.axiosInstance.interceptors.request.use(
       async (config) => {
-        // Add authentication token if available
-        const token = await this.getAuthToken();
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
+        // Skip auth token for config endpoint to avoid circular dependency
+        if (!config.url?.includes(API_ENDPOINTS.CONFIG)) {
+          // Add authentication token if available
+          const token = await this.getAuthToken();
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+          }
         }
 
         // Add request timestamp for debugging
