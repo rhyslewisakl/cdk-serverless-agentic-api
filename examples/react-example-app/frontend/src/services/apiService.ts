@@ -277,22 +277,18 @@ class ApiService {
       const config = await this.get<AuthConfig>(API_ENDPOINTS.CONFIG);
       console.log('[ApiService] Config received from API:', config);
       
-      // Update base URL if provided in config
-      if (config.apiEndpoint) {
-        console.log('[ApiService] Updating base URL to:', config.apiEndpoint);
-        this.updateBaseURL(config.apiEndpoint);
-      }
-      
       return config;
     } catch (error) {
       console.error('[ApiService] Failed to get config:', error);
       
       // Return a default config for development/testing
       const defaultConfig: AuthConfig = {
-        userPoolId: 'development',
-        userPoolWebClientId: 'development',
-        region: 'us-east-1',
-        apiEndpoint: '',
+        auth: {
+          userPoolId: 'development',
+          userPoolWebClientId: 'development',
+          region: 'us-east-1',
+        },
+        version: '1.0.0',
       };
       
       console.warn('[ApiService] Using default configuration for development:', defaultConfig);

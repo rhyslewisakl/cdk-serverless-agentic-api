@@ -3,7 +3,7 @@
  */
 
 import { Amplify } from 'aws-amplify';
-import { signIn, signUp, signOut, getCurrentUser, updatePassword, resetPassword, confirmResetPassword } from 'aws-amplify/auth';
+import { signIn, signUp, signOut, getCurrentUser, updatePassword, resetPassword, confirmResetPassword, fetchAuthSession } from 'aws-amplify/auth';
 import { AuthUser, LoginCredentials, RegisterCredentials, PasswordChangeCredentials, PasswordResetCredentials } from '../types/auth';
 import { AuthConfig } from '../types/api';
 import { apiService } from './apiService';
@@ -26,7 +26,7 @@ class AuthService {
       console.log('[AuthService] Config received:', this.config);
       
       // Skip Amplify configuration if using development config
-      if (this.config.userPoolId === 'development') {
+      if (this.config.auth?.userPoolId === 'development') {
         console.warn('[AuthService] Skipping Amplify configuration in development mode');
         this.isConfigured = true;
         return;
@@ -37,8 +37,8 @@ class AuthService {
       Amplify.configure({
         Auth: {
           Cognito: {
-            userPoolId: this.config.userPoolId,
-            userPoolClientId: this.config.userPoolWebClientId,
+            userPoolId: this.config.auth.userPoolId,
+            userPoolClientId: this.config.auth.userPoolWebClientId,
           },
         },
       });
@@ -127,10 +127,17 @@ class AuthService {
       });
 
       if (!isSignUpComplete) {
-        throw new Error('Registration requires email verification');
+        // Registration successful but requires email verification
+        // Return a temporary user object indicating verification is needed
+        return {
+          userId: credentials.email,
+          email: credentials.email,
+          emailVerified: false,
+          attributes: { requiresVerification: true },
+        };
       }
 
-      // Auto-login after successful registration
+      // Auto-login after successful registration (if no verification required)
       const user = await this.login({
         email: credentials.email,
         password: credentials.password,
@@ -176,7 +183,7 @@ class AuthService {
     try {
       // Check if we're in development mode using cached config
       console.log('[AuthService] Checking config for development mode:', this.config);
-      if (this.config?.userPoolId === 'development') {
+      if (this.config?.auth?.userPoolId === 'development') {
         console.log('[AuthService] Development mode: no authenticated user');
         return null;
       }
@@ -326,15 +333,13 @@ class AuthService {
     await this.ensureConfigured();
 
     try {
-      const user = await getCurrentUser();
-      if (!user) return null;
+      // Check if we're in development mode
+      if (this.config?.auth?.userPoolId === 'development') {
+        return null;
+      }
 
-      // In a real Amplify implementation, you would get the JWT token like this:
-      // const session = await fetchAuthSession();
-      // return session.tokens?.accessToken?.toString() || null;
-      
-      // For now, we'll return a placeholder that includes user info
-      return `Bearer-${user.userId}`;
+      const session = await fetchAuthSession();
+      return session.tokens?.accessToken?.toString() || null;
     } catch {
       return null;
     }

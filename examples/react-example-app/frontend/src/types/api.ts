@@ -35,10 +35,19 @@ export interface PaginatedResponse<T> {
 
 // Authentication related types
 export interface AuthConfig {
-  region: string;
-  userPoolId: string;
-  userPoolWebClientId: string;
-  apiEndpoint: string;
+  auth: {
+    region: string;
+    userPoolId: string;
+    userPoolWebClientId: string;
+    oauth?: {
+      domain: string;
+      scope: string[];
+      redirectSignIn: string;
+      redirectSignOut: string;
+      responseType: string;
+    };
+  };
+  version: string;
 }
 
 export interface UserInfo {
