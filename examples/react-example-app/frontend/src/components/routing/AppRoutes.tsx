@@ -16,6 +16,7 @@ import {
   DashboardPage,
   NotFoundPage,
 } from '../pages';
+import ItemsPage from '../pages/ItemsPage';
 
 /**
  * Main application routes with authentication guards
@@ -68,7 +69,7 @@ export const AppRoutes: React.FC = () => {
             path="/items"
             element={
               <AuthGuard requireAuth={true}>
-                <PlaceholderPage title="Items" description="CRUD operations will be implemented in task 5" />
+                <ItemsPage />
               </AuthGuard>
             }
           />

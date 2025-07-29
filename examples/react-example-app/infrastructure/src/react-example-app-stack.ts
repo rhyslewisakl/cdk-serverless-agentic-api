@@ -47,8 +47,53 @@ export class ReactExampleAppStack extends cdk.Stack {
       lambdaFunction.addEnvironment('USER_ITEMS_GSI_NAME', 'userId-createdAt-index');
     });
 
-    // Store table reference for later use in CRUD Lambda functions
-    // The permissions will be granted when we create the specific CRUD endpoints in task 2
+    // Add CRUD API endpoints with DynamoDB environment variables
+    const listItemsFunction = webApp.addResource({
+      path: '/items',
+      method: 'GET',
+      lambdaSourcePath: './lambda/items-list',
+      requiresAuth: true,
+      environment: {
+        USER_ITEMS_TABLE_NAME: userItemsTable.tableName,
+        USER_ITEMS_GSI_NAME: 'UserItemsGSI'
+      }
+    });
+
+    const createItemFunction = webApp.addResource({
+      path: '/items',
+      method: 'POST',
+      lambdaSourcePath: './lambda/items-create',
+      requiresAuth: true,
+      environment: {
+        USER_ITEMS_TABLE_NAME: userItemsTable.tableName
+      }
+    });
+
+    const updateItemFunction = webApp.addResource({
+      path: '/items/{id}',
+      method: 'PUT',
+      lambdaSourcePath: './lambda/items-update',
+      requiresAuth: true,
+      environment: {
+        USER_ITEMS_TABLE_NAME: userItemsTable.tableName
+      }
+    });
+
+    const deleteItemFunction = webApp.addResource({
+      path: '/items/{id}',
+      method: 'DELETE',
+      lambdaSourcePath: './lambda/items-delete',
+      requiresAuth: true,
+      environment: {
+        USER_ITEMS_TABLE_NAME: userItemsTable.tableName
+      }
+    });
+
+    // Grant DynamoDB permissions using the construct's helper method
+    webApp.grantDynamoDBAccess(listItemsFunction, userItemsTable, 'read');
+    webApp.grantDynamoDBAccess(createItemFunction, userItemsTable, 'write');
+    webApp.grantDynamoDBAccess(updateItemFunction, userItemsTable, 'readwrite');
+    webApp.grantDynamoDBAccess(deleteItemFunction, userItemsTable, 'readwrite');
 
     // Output important values
     new cdk.CfnOutput(this, 'UserPoolId', {

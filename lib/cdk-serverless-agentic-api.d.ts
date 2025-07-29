@@ -103,4 +103,12 @@ export declare class CDKServerlessAgenticAPI extends Construct {
      * @param options Security enforcement options
      */
     enforceSecurityBestPractices(options?: SecurityEnforcementOptions): void;
+    /**
+     * Grants DynamoDB access to a Lambda function
+     *
+     * @param lambdaFunction The Lambda function to grant access to
+     * @param table The DynamoDB table to grant access to
+     * @param accessType The type of access to grant ('read', 'write', or 'readwrite')
+     */
+    grantDynamoDBAccess(lambdaFunction: lambda.Function, table: any, accessType?: 'read' | 'write' | 'readwrite'): void;
 }

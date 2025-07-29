@@ -336,4 +336,29 @@ export class CDKServerlessAgenticAPI extends Construct {
   public enforceSecurityBestPractices(options: SecurityEnforcementOptions = {}): void {
     enforceSecurityBestPractices(this, options);
   }
+
+  /**
+   * Grants DynamoDB access to a Lambda function
+   * 
+   * @param lambdaFunction The Lambda function to grant access to
+   * @param table The DynamoDB table to grant access to
+   * @param accessType The type of access to grant ('read', 'write', or 'readwrite')
+   */
+  public grantDynamoDBAccess(
+    lambdaFunction: lambda.Function,
+    table: any,
+    accessType: 'read' | 'write' | 'readwrite' = 'readwrite'
+  ): void {
+    switch (accessType) {
+      case 'read':
+        table.grantReadData(lambdaFunction);
+        break;
+      case 'write':
+        table.grantWriteData(lambdaFunction);
+        break;
+      case 'readwrite':
+        table.grantReadWriteData(lambdaFunction);
+        break;
+    }
+  }
 }

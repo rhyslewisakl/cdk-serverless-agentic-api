@@ -60,28 +60,26 @@ export const ItemList: React.FC<ItemListProps> = ({
 
       let response: ItemListResponse;
 
-      // Apply filters
+      // Get all items and apply client-side filtering
+      const allItems = await itemService.getItems();
+      let filteredItems = allItems;
+      
       if (currentFilters.search) {
-        response = await itemService.searchItems(currentFilters.search, {
-          limit: UI.PAGINATION_LIMIT,
-          nextToken: isLoadMore ? nextToken : undefined,
-        });
+        filteredItems = allItems.filter(item => 
+          item.title.toLowerCase().includes(currentFilters.search.toLowerCase()) ||
+          item.description.toLowerCase().includes(currentFilters.search.toLowerCase())
+        );
       } else if (currentFilters.category) {
-        response = await itemService.getItemsByCategory(currentFilters.category, {
-          limit: UI.PAGINATION_LIMIT,
-          nextToken: isLoadMore ? nextToken : undefined,
-        });
+        filteredItems = allItems.filter(item => item.category === currentFilters.category);
       } else if (currentFilters.status) {
-        response = await itemService.getItemsByStatus(currentFilters.status, {
-          limit: UI.PAGINATION_LIMIT,
-          nextToken: isLoadMore ? nextToken : undefined,
-        });
-      } else {
-        response = await itemService.getItems({
-          limit: UI.PAGINATION_LIMIT,
-          nextToken: isLoadMore ? nextToken : undefined,
-        });
+        filteredItems = allItems.filter(item => item.status === currentFilters.status);
       }
+      
+      response = {
+        items: filteredItems,
+        nextToken: undefined,
+        count: filteredItems.length
+      };
 
       if (isLoadMore) {
         setItems(prev => [...prev, ...response.items]);
