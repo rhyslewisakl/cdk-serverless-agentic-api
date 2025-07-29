@@ -24,6 +24,6 @@
   "dependencies": {
     "aws-cdk-lib": "2.170.0",
     "constructs": "^10.0.0",
-    "cdk-serverless-agentic-api": "^0.3.23"
+    "cdk-serverless-agentic-api": "^0.3.25"
   }
 }

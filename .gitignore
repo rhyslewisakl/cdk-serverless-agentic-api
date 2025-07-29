@@ -18,7 +18,7 @@ dist/
 
 # Exclude JavaScript files except in lib directory
 test/**/*.js
-examples/**/*.js
+#examples/**/*.js
 src/**/*.js
 
 # Exclude TypeScript declaration files except in lib directory
