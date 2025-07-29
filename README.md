@@ -77,44 +77,20 @@ export class MyStack extends Stack {
     });
   }
 }
-
+```
 
 ## Installation
 
 ### TypeScript / JavaScript
 
 ```bash
+cdk init app --language typescript
+
 # npm
 npm install cdk-serverless-agentic-api
 
-# yarn
-yarn add cdk-serverless-agentic-api
-
-# pnpm
-pnpm add cdk-serverless-agentic-api
 ```
 
-### Python
-
-```bash
-pip install cdk-serverless-agentic-api
-```
-
-### Java
-
-```xml
-<dependency>
-  <groupId>nz.rhyslewis</groupId>
-  <artifactId>cdk-serverless-agentic-api</artifactId>
-  <version>[version]</version>
-</dependency>
-```
-
-### .NET
-
-```bash
-dotnet add package NZRhysLewis.CdkServerlessAgenticApi
-```
 
 ## Project Structure
 

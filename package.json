@@ -61,7 +61,7 @@
     "vitest": "^0.34.6"
   },
   "peerDependencies": {
-    "aws-cdk-lib": "2.170.0",
+    "aws-cdk-lib": ">=2.170.0",
     "constructs": "^10.0.0"
   },
   "peerDependenciesMeta": {
