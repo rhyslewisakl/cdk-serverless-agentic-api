@@ -51,7 +51,7 @@ export class ReactExampleAppStack extends cdk.Stack {
     const listItemsFunction = webApp.addResource({
       path: '/items',
       method: 'GET',
-      lambdaSourcePath: './lambda/items-list',
+      lambdaSourcePath: '../lambda/items-list',
       requiresAuth: true,
       environment: {
         USER_ITEMS_TABLE_NAME: userItemsTable.tableName,
@@ -62,7 +62,7 @@ export class ReactExampleAppStack extends cdk.Stack {
     const createItemFunction = webApp.addResource({
       path: '/items',
       method: 'POST',
-      lambdaSourcePath: './lambda/items-create',
+      lambdaSourcePath: '../lambda/items-create',
       requiresAuth: true,
       environment: {
         USER_ITEMS_TABLE_NAME: userItemsTable.tableName
@@ -72,7 +72,7 @@ export class ReactExampleAppStack extends cdk.Stack {
     const updateItemFunction = webApp.addResource({
       path: '/items/{id}',
       method: 'PUT',
-      lambdaSourcePath: './lambda/items-update',
+      lambdaSourcePath: '../lambda/items-update',
       requiresAuth: true,
       environment: {
         USER_ITEMS_TABLE_NAME: userItemsTable.tableName
@@ -82,7 +82,7 @@ export class ReactExampleAppStack extends cdk.Stack {
     const deleteItemFunction = webApp.addResource({
       path: '/items/{id}',
       method: 'DELETE',
-      lambdaSourcePath: './lambda/items-delete',
+      lambdaSourcePath: '../lambda/items-delete',
       requiresAuth: true,
       environment: {
         USER_ITEMS_TABLE_NAME: userItemsTable.tableName

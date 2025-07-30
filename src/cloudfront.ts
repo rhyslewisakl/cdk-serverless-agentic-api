@@ -30,7 +30,7 @@ export function createCloudFrontDistribution(
   loggingBucket?: s3.Bucket
 ): cloudfront.Distribution {
   // Create S3 origin for static content
-  const s3Origin = new origins.S3Origin(bucket, {
+  const s3Origin = origins.S3BucketOrigin.withOriginAccessIdentity(bucket, {
     originAccessIdentity: originAccessIdentity,
     originPath: '',
   });
