@@ -255,7 +255,7 @@ export class CDKServerlessAgenticAPI extends Construct {
       config: config
     };
 
-    this.lambdaFunctions[config.path] = lambdaEntry;
+    this.lambdaFunctions[`${config.method} ${config.path}`] = lambdaEntry;
     
     return lambdaFunction;
   }
@@ -335,6 +335,18 @@ export class CDKServerlessAgenticAPI extends Construct {
    */
   public enforceSecurityBestPractices(options: SecurityEnforcementOptions = {}): void {
     enforceSecurityBestPractices(this, options);
+  }
+
+  /**
+   * Gets a Lambda function by path and method
+   * 
+   * @param path The API path (e.g., '/users')
+   * @param method The HTTP method (defaults to 'GET')
+   * @returns The Lambda function or undefined if not found
+   */
+  public getLambdaFunction(path: string, method: string = 'GET'): lambda.Function | undefined {
+    const key = `${method.toUpperCase()} /api${path}`;
+    return this.lambdaFunctions[key]?.function;
   }
 
   /**
