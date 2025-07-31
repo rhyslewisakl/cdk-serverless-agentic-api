@@ -162,8 +162,16 @@ function createLambdaExecutionRole(
   constructId: string,
   additionalPolicies?: iam.PolicyStatement[]
 ): iam.Role {
+  // Create unique construct ID to prevent name clashes using scope path
+  const scopeHash = Math.abs(scope.node.path.split('').reduce((a, b) => {
+    a = ((a << 5) - a) + b.charCodeAt(0);
+    return a & a;
+  }, 0)).toString(36).substring(0, 6);
+  const uniqueConstructId = `${functionName}ExecutionRole${scopeHash}`;
+  
   // Create the execution role
-  const role = new iam.Role(scope, `${functionName}ExecutionRole`, {
+  const role = new iam.Role(scope, uniqueConstructId, {
+    roleName: `${constructId}-${functionName}-execution-role`,
     assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
     description: `Execution role for ${functionName} Lambda function`,
     managedPolicies: [
