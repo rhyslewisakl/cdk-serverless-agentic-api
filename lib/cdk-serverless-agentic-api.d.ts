@@ -104,6 +104,14 @@ export declare class CDKServerlessAgenticAPI extends Construct {
      */
     enforceSecurityBestPractices(options?: SecurityEnforcementOptions): void;
     /**
+     * Gets a Lambda function by path and method
+     *
+     * @param path The API path (e.g., '/users')
+     * @param method The HTTP method (defaults to 'GET')
+     * @returns The Lambda function or undefined if not found
+     */
+    getLambdaFunction(path: string, method?: string): lambda.Function | undefined;
+    /**
      * Grants DynamoDB access to a Lambda function
      *
      * @param lambdaFunction The Lambda function to grant access to
