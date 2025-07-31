@@ -265,7 +265,7 @@ function generateLambdaFunctionName(resourcePath: string, method: string): strin
     const hash = Math.abs(functionName.split('').reduce((a, b) => {
       a = ((a << 5) - a) + b.charCodeAt(0);
       return a & a;
-    }, 0)).toString(36).substring(0, 6);
+    }, 0)).toString(36).substring(0, 8);
     
     // Truncate name to maxLength - hash length
     const truncatedLength = maxLength - hash.length;
