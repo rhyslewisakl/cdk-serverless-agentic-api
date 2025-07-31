@@ -261,7 +261,15 @@ function generateLambdaFunctionName(resourcePath: string, method: string): strin
   // IAM role name limit is 64 chars, and we add "-execution-role" (15 chars) plus construct ID
   const maxLength = 30; // Conservative limit to account for construct ID and suffix
   if (functionName.length > maxLength) {
-    functionName = functionName.substring(0, maxLength);
+    // Generate unique hash of the entire name
+    const hash = Math.abs(functionName.split('').reduce((a, b) => {
+      a = ((a << 5) - a) + b.charCodeAt(0);
+      return a & a;
+    }, 0)).toString(36).substring(0, 6);
+    
+    // Truncate name to maxLength - hash length
+    const truncatedLength = maxLength - hash.length;
+    functionName = functionName.substring(0, truncatedLength) + hash;
   }
   
   // Remove trailing hyphens after truncation
