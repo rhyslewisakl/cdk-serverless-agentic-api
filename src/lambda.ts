@@ -164,7 +164,6 @@ function createLambdaExecutionRole(
 ): iam.Role {
   // Create the execution role
   const role = new iam.Role(scope, `${functionName}ExecutionRole`, {
-    roleName: `${constructId}-${functionName}-execution-role`,
     assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
     description: `Execution role for ${functionName} Lambda function`,
     managedPolicies: [
