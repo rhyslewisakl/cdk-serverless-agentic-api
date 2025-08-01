@@ -25,7 +25,8 @@ export function createLambdaFunction(
   sourcePath: string,
   constructId: string,
   environment?: { [key: string]: string },
-  additionalPolicies?: iam.PolicyStatement[]
+  additionalPolicies?: iam.PolicyStatement[],
+  enableDLQ?: boolean
 ): lambda.Function {
   // Validate input parameters
   validateLambdaFunctionParameters(functionName, sourcePath);
@@ -51,7 +52,7 @@ export function createLambdaFunction(
     },
     timeout: Duration.seconds(30),
     memorySize: 256,
-    deadLetterQueueEnabled: true,
+    deadLetterQueueEnabled: enableDLQ || false,
     retryAttempts: 2,
     architecture: lambda.Architecture.ARM_64,
     tracing: lambda.Tracing.ACTIVE,
@@ -111,7 +112,8 @@ export function createApiLambdaFunction(
     config.lambdaSourcePath,
     constructId,
     apiEnvironment,
-    additionalPolicies
+    additionalPolicies,
+    config.enableDLQ
   );
 
   return lambdaFunction;

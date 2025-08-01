@@ -148,8 +148,13 @@ export function createLambdaAlarms(
   dashboard: cloudwatch.Dashboard,
   constructId: string
 ): void {
-  // Create alarms for each Lambda function
+  // Create alarms for each Lambda function that has health alarms enabled
   Object.entries(lambdaFunctions).forEach(([path, entry]) => {
+    // Only create alarms if enableHealthAlarms is true
+    if (!entry.config.enableHealthAlarms) {
+      return;
+    }
+
     // Generate a safe alarm ID from the path
     const safePath = path.replace(/[^a-zA-Z0-9]/g, '');
     const alarmIdPrefix = `Lambda${safePath}`;

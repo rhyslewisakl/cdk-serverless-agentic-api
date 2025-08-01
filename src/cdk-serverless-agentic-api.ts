@@ -221,7 +221,9 @@ export class CDKServerlessAgenticAPI extends Construct {
       requiresAuth: options.requiresAuth || false,
       cognitoGroup: options.cognitoGroup,
       lambdaSourcePath: options.lambdaSourcePath,
-      environment: options.environment
+      environment: options.environment,
+      enableDLQ: options.enableDLQ || false,
+      enableHealthAlarms: options.enableHealthAlarms || false
     };
 
     // Store configuration for later implementation
@@ -309,7 +311,8 @@ export class CDKServerlessAgenticAPI extends Construct {
       sourcePath,
       this.node.id,
       environment,
-      additionalPolicies
+      additionalPolicies,
+      false
     );
   }
 
