@@ -43,6 +43,14 @@ export interface CDKServerlessAgenticAPIProps {
      * @default - Uses the bundled error-pages directory from the package
      */
     readonly errorPagesPath?: string;
+    /**
+     * Extension mode configuration - use existing resources from another stack
+     */
+    readonly extensionMode?: ExtensionModeConfig;
+    /**
+     * Skip creating certain resources (for extension mode)
+     */
+    readonly skipResources?: SkipResourcesConfig;
 }
 /**
  * Options for adding a new API resource to the construct
@@ -163,4 +171,83 @@ export interface LambdaFunctionOptions {
      * Additional IAM policy statements to attach to the Lambda execution role
      */
     readonly additionalPolicies?: any[];
+}
+/**
+ * Configuration for extension mode - using existing resources from another stack
+ */
+export interface ExtensionModeConfig {
+    /**
+     * Existing API Gateway REST API ID
+     */
+    readonly apiId?: string;
+    /**
+     * Existing Cognito User Pool ID
+     */
+    readonly userPoolId?: string;
+    /**
+     * Existing Cognito User Pool Client ID
+     */
+    readonly userPoolClientId?: string;
+    /**
+     * Existing S3 bucket name
+     */
+    readonly bucketName?: string;
+    /**
+     * Existing CloudFront distribution ID
+     */
+    readonly distributionId?: string;
+    /**
+     * Existing Cognito authorizer ID
+     */
+    readonly cognitoAuthorizerId?: string;
+}
+/**
+ * Configuration for skipping resource creation
+ */
+export interface SkipResourcesConfig {
+    /**
+     * Skip creating S3 bucket
+     */
+    readonly skipBucket?: boolean;
+    /**
+     * Skip creating CloudFront distribution
+     */
+    readonly skipDistribution?: boolean;
+    /**
+     * Skip creating logging bucket
+     */
+    readonly skipLoggingBucket?: boolean;
+    /**
+     * Skip creating default endpoints
+     */
+    readonly skipDefaultEndpoints?: boolean;
+}
+/**
+ * Exportable resource IDs for use in extension stacks
+ */
+export interface ExportableResourceIds {
+    /**
+     * API Gateway REST API ID
+     */
+    readonly apiId: string;
+    /**
+     * Cognito User Pool ID
+     */
+    readonly userPoolId: string;
+    /**
+     * Cognito User Pool Client ID
+     */
+    readonly userPoolClientId: string;
+    /**
+     * S3 bucket name
+     */
+    readonly bucketName?: string;
+    /**
+     * CloudFront distribution ID
+     */
+    readonly distributionId?: string;
+    /**
+     * Cognito authorizer ID
+     */
+    readonly cognitoAuthorizerId: string;
 }

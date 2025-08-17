@@ -102,14 +102,14 @@ export class CDKServerlessAgenticAPI extends Construct {
 
     // Extension mode - use existing resources or create new ones
     if (props?.extensionMode?.apiId) {
-      this.api = apigateway.RestApi.fromRestApiId(this, 'ImportedApi', props.extensionMode.apiId);
+      this.api = apigateway.RestApi.fromRestApiId(this, 'ImportedApi', props.extensionMode.apiId) as apigateway.RestApi;
     } else {
       this.api = createApiGateway(this, id, props);
     }
 
     if (props?.extensionMode?.userPoolId) {
-      this.userPool = cognito.UserPool.fromUserPoolId(this, 'ImportedUserPool', props.extensionMode.userPoolId);
-      this._userPoolClient = cognito.UserPoolClient.fromUserPoolClientId(this, 'ImportedUserPoolClient', props.extensionMode.userPoolClientId!);
+      this.userPool = cognito.UserPool.fromUserPoolId(this, 'ImportedUserPool', props.extensionMode.userPoolId) as cognito.UserPool;
+      this._userPoolClient = cognito.UserPoolClient.fromUserPoolClientId(this, 'ImportedUserPoolClient', props.extensionMode.userPoolClientId!) as cognito.UserPoolClient;
     } else {
       const cognitoResources = createUserPool(this, id, props);
       this.userPool = cognitoResources.userPool;
@@ -117,10 +117,16 @@ export class CDKServerlessAgenticAPI extends Construct {
     }
 
     if (props?.extensionMode?.cognitoAuthorizerId) {
-      this.cognitoAuthorizer = apigateway.CfnAuthorizer.fromCfnAuthorizerAttributes(this, 'ImportedAuthorizer', {
-        authorizerId: props.extensionMode.cognitoAuthorizerId,
-        authorizerType: 'COGNITO_USER_POOLS'
+      // Create a new authorizer reference for extension mode
+      this.cognitoAuthorizer = new apigateway.CfnAuthorizer(this, 'ImportedAuthorizer', {
+        restApiId: this.api.restApiId,
+        type: 'COGNITO_USER_POOLS',
+        identitySource: 'method.request.header.Authorization',
+        name: 'CognitoAuthorizer',
+        providerArns: [this.userPool.userPoolArn]
       });
+      // Override the ref to use the imported ID
+      (this.cognitoAuthorizer as any).ref = props.extensionMode.cognitoAuthorizerId;
     } else {
       this.cognitoAuthorizer = createCognitoAuthorizer(this, this.api, this.userPool, id);
     }
@@ -128,7 +134,7 @@ export class CDKServerlessAgenticAPI extends Construct {
     // Create S3 bucket only if not skipped
     if (!props?.skipResources?.skipBucket) {
       if (props?.extensionMode?.bucketName) {
-        this.bucket = s3.Bucket.fromBucketName(this, 'ImportedBucket', props.extensionMode.bucketName);
+        this.bucket = s3.Bucket.fromBucketName(this, 'ImportedBucket', props.extensionMode.bucketName) as s3.Bucket;
       } else {
         this.bucket = createS3Bucket(this, id, props);
       }
@@ -137,7 +143,9 @@ export class CDKServerlessAgenticAPI extends Construct {
       this.originAccessIdentity = createOriginAccessIdentity(this, id);
       
       // Configure S3 bucket policy for CloudFront access
-      configureBucketPolicy(this.bucket, this.originAccessIdentity);
+      if (this.bucket && this.originAccessIdentity) {
+        configureBucketPolicy(this.bucket, this.originAccessIdentity);
+      }
     }
 
     // Create logging bucket if logging is enabled and not skipped
@@ -149,7 +157,7 @@ export class CDKServerlessAgenticAPI extends Construct {
         // Note: CloudFront Distribution cannot be imported, so we'll set it to undefined
         // Extension stacks should not need to reference the distribution directly
         this.distribution = undefined as any;
-      } else {
+      } else if (this.bucket && this.originAccessIdentity) {
         this.distribution = createCloudFrontDistribution(
           this, 
           id, 
@@ -169,7 +177,7 @@ export class CDKServerlessAgenticAPI extends Construct {
 
     // Configure monitoring and alarms if logging is enabled
     // This must come after createDefaultEndpoints() to avoid circular dependency
-    if (props?.enableLogging !== false) {
+    if (props?.enableLogging !== false && this.distribution) {
       createMonitoringResources(
         this as any as Construct,
         this.api,

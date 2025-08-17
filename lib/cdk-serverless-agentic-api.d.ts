@@ -4,7 +4,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import { CDKServerlessAgenticAPIProps, AddResourceOptions, LambdaFunctionEntry } from './types';
+import { CDKServerlessAgenticAPIProps, AddResourceOptions, LambdaFunctionEntry, ExportableResourceIds } from './types';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { SecurityValidationResult, SecurityValidationOptions, SecurityEnforcementOptions } from './security-validation';
 /**
@@ -13,17 +13,13 @@ import { SecurityValidationResult, SecurityValidationOptions, SecurityEnforcemen
  */
 export declare class CDKServerlessAgenticAPI extends Construct {
     /**
-     * The CloudFront distribution that serves as the main entry point
+     * The S3 bucket used for static website hosting (optional in extension mode)
      */
-    readonly distribution: cloudfront.Distribution;
+    readonly bucket?: s3.Bucket;
     /**
-     * The S3 bucket used for static website hosting
+     * The CloudFront Origin Access Identity for S3 bucket access (optional in extension mode)
      */
-    readonly bucket: s3.Bucket;
-    /**
-     * The CloudFront Origin Access Identity for S3 bucket access
-     */
-    readonly originAccessIdentity: cloudfront.OriginAccessIdentity;
+    readonly originAccessIdentity?: cloudfront.OriginAccessIdentity;
     /**
      * The Cognito User Pool for authentication
      */
@@ -44,6 +40,10 @@ export declare class CDKServerlessAgenticAPI extends Construct {
      * The Cognito authorizer for authenticated API endpoints
      */
     readonly cognitoAuthorizer: apigateway.CfnAuthorizer;
+    /**
+     * The CloudFront distribution (optional in extension mode)
+     */
+    readonly distribution?: cloudfront.Distribution;
     /**
      * Registry of Lambda functions indexed by their resource path
      */
@@ -111,6 +111,12 @@ export declare class CDKServerlessAgenticAPI extends Construct {
      * @returns The Lambda function or undefined if not found
      */
     getLambdaFunction(path: string, method?: string): lambda.Function | undefined;
+    /**
+     * Gets exportable resource IDs for use in extension stacks
+     *
+     * @returns Object containing resource IDs that can be used by extension stacks
+     */
+    getExportableResourceIds(): ExportableResourceIds;
     /**
      * Grants DynamoDB access to a Lambda function
      *
