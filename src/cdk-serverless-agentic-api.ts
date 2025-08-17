@@ -8,7 +8,8 @@ import {
   CDKServerlessAgenticAPIProps, 
   AddResourceOptions, 
   ResourceConfig,
-  LambdaFunctionEntry 
+  LambdaFunctionEntry,
+  ExportableResourceIds 
 } from './types';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { validateSecurityConfiguration, SecurityValidationResult, SecurityValidationOptions, SecurityEnforcementOptions, enforceSecurityBestPractices } from './security-validation';
@@ -26,19 +27,14 @@ import * as path from 'path';
  */
 export class CDKServerlessAgenticAPI extends Construct {
   /**
-   * The CloudFront distribution that serves as the main entry point
+   * The S3 bucket used for static website hosting (optional in extension mode)
    */
-  public readonly distribution: cloudfront.Distribution;
+  public readonly bucket?: s3.Bucket;
 
   /**
-   * The S3 bucket used for static website hosting
+   * The CloudFront Origin Access Identity for S3 bucket access (optional in extension mode)
    */
-  public readonly bucket: s3.Bucket;
-
-  /**
-   * The CloudFront Origin Access Identity for S3 bucket access
-   */
-  public readonly originAccessIdentity: cloudfront.OriginAccessIdentity;
+  public readonly originAccessIdentity?: cloudfront.OriginAccessIdentity;
 
   /**
    * The Cognito User Pool for authentication
@@ -66,6 +62,11 @@ export class CDKServerlessAgenticAPI extends Construct {
    * The Cognito authorizer for authenticated API endpoints
    */
   public readonly cognitoAuthorizer: apigateway.CfnAuthorizer;
+
+  /**
+   * The CloudFront distribution (optional in extension mode)
+   */
+  public readonly distribution?: cloudfront.Distribution;
 
   /**
    * Registry of Lambda functions indexed by their resource path
@@ -99,40 +100,72 @@ export class CDKServerlessAgenticAPI extends Construct {
       throw new Error('certificateArn is required when domainName is provided');
     }
 
-    // Create S3 bucket for static website hosting
-    this.bucket = createS3Bucket(this, id, props);
+    // Extension mode - use existing resources or create new ones
+    if (props?.extensionMode?.apiId) {
+      this.api = apigateway.RestApi.fromRestApiId(this, 'ImportedApi', props.extensionMode.apiId);
+    } else {
+      this.api = createApiGateway(this, id, props);
+    }
 
-    // Create CloudFront Origin Access Identity for secure S3 access
-    this.originAccessIdentity = createOriginAccessIdentity(this, id);
+    if (props?.extensionMode?.userPoolId) {
+      this.userPool = cognito.UserPool.fromUserPoolId(this, 'ImportedUserPool', props.extensionMode.userPoolId);
+      this._userPoolClient = cognito.UserPoolClient.fromUserPoolClientId(this, 'ImportedUserPoolClient', props.extensionMode.userPoolClientId!);
+    } else {
+      const cognitoResources = createUserPool(this, id, props);
+      this.userPool = cognitoResources.userPool;
+      this._userPoolClient = cognitoResources.userPoolClient;
+    }
 
-    // Configure S3 bucket policy for CloudFront access
-    configureBucketPolicy(this.bucket, this.originAccessIdentity);
+    if (props?.extensionMode?.cognitoAuthorizerId) {
+      this.cognitoAuthorizer = apigateway.CfnAuthorizer.fromCfnAuthorizerAttributes(this, 'ImportedAuthorizer', {
+        authorizerId: props.extensionMode.cognitoAuthorizerId,
+        authorizerType: 'COGNITO_USER_POOLS'
+      });
+    } else {
+      this.cognitoAuthorizer = createCognitoAuthorizer(this, this.api, this.userPool, id);
+    }
 
-    // Create Cognito User Pool for authentication
-    const cognitoResources = createUserPool(this, id, props);
-    this.userPool = cognitoResources.userPool;
-    this._userPoolClient = cognitoResources.userPoolClient;
+    // Create S3 bucket only if not skipped
+    if (!props?.skipResources?.skipBucket) {
+      if (props?.extensionMode?.bucketName) {
+        this.bucket = s3.Bucket.fromBucketName(this, 'ImportedBucket', props.extensionMode.bucketName);
+      } else {
+        this.bucket = createS3Bucket(this, id, props);
+      }
+      
+      // Create CloudFront Origin Access Identity for secure S3 access
+      this.originAccessIdentity = createOriginAccessIdentity(this, id);
+      
+      // Configure S3 bucket policy for CloudFront access
+      configureBucketPolicy(this.bucket, this.originAccessIdentity);
+    }
 
-    // Create API Gateway with Cognito authorizer
-    this.api = createApiGateway(this, id, props);
-    this.cognitoAuthorizer = createCognitoAuthorizer(this, this.api, this.userPool, id);
+    // Create logging bucket if logging is enabled and not skipped
+    const loggingBucket = (props?.enableLogging !== false && !props?.skipResources?.skipLoggingBucket) ? createLoggingBucket(this) : undefined;
 
-    // Create logging bucket if logging is enabled
-    const loggingBucket = props?.enableLogging !== false ? createLoggingBucket(this) : undefined;
+    // Create CloudFront distribution only if not skipped
+    if (!props?.skipResources?.skipDistribution) {
+      if (props?.extensionMode?.distributionId) {
+        // Note: CloudFront Distribution cannot be imported, so we'll set it to undefined
+        // Extension stacks should not need to reference the distribution directly
+        this.distribution = undefined as any;
+      } else {
+        this.distribution = createCloudFrontDistribution(
+          this, 
+          id, 
+          this.bucket, 
+          this.originAccessIdentity, 
+          this.api, 
+          props, 
+          loggingBucket
+        );
+      }
+    }
 
-    // Create CloudFront distribution
-    this.distribution = createCloudFrontDistribution(
-      this, 
-      id, 
-      this.bucket, 
-      this.originAccessIdentity, 
-      this.api, 
-      props, 
-      loggingBucket
-    );
-
-    // Create default endpoints first to populate lambdaFunctions registry
-    this.createDefaultEndpoints();
+    // Create default endpoints first to populate lambdaFunctions registry (unless skipped)
+    if (!props?.skipResources?.skipDefaultEndpoints) {
+      this.createDefaultEndpoints();
+    }
 
     // Configure monitoring and alarms if logging is enabled
     // This must come after createDefaultEndpoints() to avoid circular dependency
@@ -350,6 +383,22 @@ export class CDKServerlessAgenticAPI extends Construct {
   public getLambdaFunction(path: string, method: string = 'GET'): lambda.Function | undefined {
     const key = `${method.toUpperCase()} /api${path}`;
     return this.lambdaFunctions[key]?.function;
+  }
+
+  /**
+   * Gets exportable resource IDs for use in extension stacks
+   * 
+   * @returns Object containing resource IDs that can be used by extension stacks
+   */
+  public getExportableResourceIds(): ExportableResourceIds {
+    return {
+      apiId: this.api.restApiId,
+      userPoolId: this.userPool.userPoolId,
+      userPoolClientId: this.userPoolClient.userPoolClientId,
+      bucketName: this.bucket?.bucketName,
+      distributionId: this.distribution?.distributionId,
+      cognitoAuthorizerId: this.cognitoAuthorizer.ref
+    };
   }
 
   /**

@@ -228,20 +228,47 @@ webApp.addResource({
     PAYMENT_MODE: 'test'
   }
 });
+
+// With Dead Letter Queue enabled
+webApp.addResource({
+  path: '/critical',
+  lambdaSourcePath: './lambda/critical',
+  requiresAuth: true,
+  enableDLQ: true  // Enable DLQ for failed invocations
+});
+
+// With health alarms enabled
+webApp.addResource({
+  path: '/monitored',
+  lambdaSourcePath: './lambda/monitored',
+  requiresAuth: false,
+  enableHealthAlarms: true  // Enable CloudWatch alarms
+});
 ```
 
 ### Accessing Lambda Functions
 
 ```typescript
-// Access Lambda functions from the registry
-const usersFunction = webApp.lambdaFunctions.get('GET /users');
+// Access Lambda functions using the new getLambdaFunction method
+const usersFunction = webApp.getLambdaFunction('/users', 'GET');
 if (usersFunction) {
   // Grant additional permissions
-  myDynamoTable.grantReadWriteData(usersFunction.function);
+  myDynamoTable.grantReadWriteData(usersFunction);
   
   // Add event source mappings
-  usersFunction.function.addEventSource(new SqsEventSource(myQueue));
+  usersFunction.addEventSource(new SqsEventSource(myQueue));
 }
+
+// Use the helper method for DynamoDB permissions
+const createUserFunction = webApp.addResource({
+  path: '/users',
+  method: 'POST',
+  lambdaSourcePath: './lambda/create-user',
+  requiresAuth: true
+});
+
+// Grant DynamoDB access using the helper method
+webApp.grantDynamoDBAccess(createUserFunction, myTable, 'readwrite');
 ```
 
 ### Security Validation
@@ -278,12 +305,21 @@ const userFunction = api.addResource({
   requiresAuth: true
 });
 
+// Get a Lambda function by path and method
+const getUsersFunction = api.getLambdaFunction('/users', 'GET');
+
 // Create a standalone Lambda function
 const processor = api.createLambdaFunction(
   'DataProcessor',
   './lambda/processor',
-  { BUCKET_NAME: api.bucket.bucketName }
+  { BUCKET_NAME: api.bucket?.bucketName }
 );
+
+// Grant DynamoDB access to a Lambda function
+api.grantDynamoDBAccess(userFunction, myTable, 'readwrite');
+
+// Get exportable resource IDs for extension stacks
+const resourceIds = api.getExportableResourceIds();
 
 // Validate security configuration
 api.validateSecurity({ throwOnFailure: true });
@@ -332,6 +368,8 @@ Options for adding a new API resource to the construct.
 | `requiresAuth`     | `boolean`                   | No       | `false` | Whether the resource requires authentication                     |
 | `cognitoGroup`     | `string`                    | No       | -       | Cognito group required to access this resource                   |
 | `environment`      | `{ [key: string]: string }` | No       | -       | Environment variables to pass to the Lambda function             |
+| `enableDLQ`        | `boolean`                   | No       | `false` | Whether to enable Dead Letter Queue for the Lambda function      |
+| `enableHealthAlarms` | `boolean`                 | No       | `false` | Whether to enable health alarms for the Lambda function          |
 
 ## Lambda Function Structure
 
@@ -462,6 +500,57 @@ my-custom-error-pages/
 ```
 
 > **Note**: If you don't provide custom paths, the construct will use the bundled Lambda functions and error pages that come with the package.
+
+## Extension Mode (Multi-Stack Support)
+
+For large applications that exceed the 500 resource limit per stack, you can use extension mode to split resources across multiple stacks while sharing core infrastructure.
+
+### Main Stack
+
+```typescript
+// Create the main stack with core infrastructure
+const mainStack = new CDKServerlessAgenticAPI(this, 'MainAPI', {
+  domainName: 'example.com',
+  certificateArn: 'arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012'
+});
+
+// Add some API resources
+mainStack.addResource({
+  path: '/users',
+  lambdaSourcePath: './lambda/users',
+  requiresAuth: true
+});
+
+// Export resource IDs for use in extension stacks
+const resourceIds = mainStack.getExportableResourceIds();
+```
+
+### Extension Stack
+
+```typescript
+// Create an extension stack that reuses the main stack's infrastructure
+const extensionStack = new CDKServerlessAgenticAPI(this, 'ExtensionAPI', {
+  extensionMode: {
+    apiId: resourceIds.apiId,
+    userPoolId: resourceIds.userPoolId,
+    userPoolClientId: resourceIds.userPoolClientId,
+    cognitoAuthorizerId: resourceIds.cognitoAuthorizerId
+  },
+  skipResources: {
+    skipBucket: true,           // Don't create S3 bucket
+    skipDistribution: true,     // Don't create CloudFront distribution
+    skipDefaultEndpoints: true, // Don't create default endpoints
+    skipLoggingBucket: true     // Don't create logging bucket
+  }
+});
+
+// Add additional API resources to the extension stack
+extensionStack.addResource({
+  path: '/products',
+  lambdaSourcePath: './lambda/products',
+  requiresAuth: true
+});
+```
 
 ## Security Best Practices
 

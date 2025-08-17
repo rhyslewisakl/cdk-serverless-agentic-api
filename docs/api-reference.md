@@ -1,16 +1,16 @@
 # API Reference
 
-This document provides a comprehensive API reference for the ServerlessWebAppConstruct.
+This document provides a comprehensive API reference for the CDKServerlessAgenticAPI.
 
 ## Classes
 
-### ServerlessWebAppConstruct
+### CDKServerlessAgenticAPI
 
 The main construct class that creates the serverless web application infrastructure.
 
 ```typescript
-class ServerlessWebAppConstruct extends Construct {
-  constructor(scope: Construct, id: string, props?: ServerlessWebAppConstructProps);
+class CDKServerlessAgenticAPI extends Construct {
+  constructor(scope: Construct, id: string, props?: CDKServerlessAgenticAPIProps);
 }
 ```
 
@@ -24,16 +24,14 @@ class ServerlessWebAppConstruct extends Construct {
 
 | Name | Type | Description |
 |------|------|-------------|
-| `bucket` | `s3.Bucket` | The S3 bucket for static website hosting |
-| `distribution` | `cloudfront.Distribution` | The CloudFront distribution |
+| `bucket` | `s3.Bucket?` | The S3 bucket for static website hosting (optional in extension mode) |
+| `distribution` | `cloudfront.Distribution?` | The CloudFront distribution (optional in extension mode) |
 | `api` | `apigateway.RestApi` | The API Gateway REST API |
 | `userPool` | `cognito.UserPool` | The Cognito user pool |
 | `userPoolClient` | `cognito.UserPoolClient` | The Cognito user pool client |
-| `identityPool` | `cognito.CfnIdentityPool` | The Cognito identity pool |
-| `authenticatedRole` | `iam.Role` | The IAM role for authenticated users |
-| `unauthenticatedRole` | `iam.Role` | The IAM role for unauthenticated users |
-| `lambdaFunctions` | `Map<string, LambdaFunctionEntry>` | Registry of Lambda functions |
-| `originAccessIdentity` | `cloudfront.OriginAccessIdentity` | The CloudFront Origin Access Identity for S3 bucket access |
+| `cognitoAuthorizer` | `apigateway.CfnAuthorizer` | The Cognito authorizer for authenticated API endpoints |
+| `lambdaFunctions` | `Record<string, LambdaFunctionEntry>` | Registry of Lambda functions indexed by method and path |
+| `originAccessIdentity` | `cloudfront.OriginAccessIdentity?` | The CloudFront Origin Access Identity for S3 bucket access (optional in extension mode) |
 
 #### Methods
 
@@ -87,40 +85,116 @@ const securityResults = webApp.validateSecurity({
 Creates a Lambda function with the specified options.
 
 ```typescript
-createLambdaFunction(options: LambdaFunctionOptions): lambda.Function
+createLambdaFunction(
+  functionName: string,
+  sourcePath: string,
+  environment?: { [key: string]: string },
+  additionalPolicies?: iam.PolicyStatement[]
+): lambda.Function
 ```
 
 **Parameters:**
-- `options`: Configuration options for the Lambda function
+- `functionName`: Unique name for the Lambda function
+- `sourcePath`: Path to the directory containing the Lambda function source code
+- `environment`: Environment variables to pass to the Lambda function
+- `additionalPolicies`: Additional IAM policies to attach to the Lambda execution role
 
 **Returns:**
 - The created Lambda function
 
 **Example:**
 ```typescript
-const myFunction = webApp.createLambdaFunction({
-  functionName: 'my-function',
-  sourcePath: './lambda/my-function',
-  environment: {
-    TABLE_NAME: 'my-table'
-  }
+const myFunction = webApp.createLambdaFunction(
+  'my-function',
+  './lambda/my-function',
+  { TABLE_NAME: 'my-table' }
+);
+```
+
+##### getLambdaFunction
+
+Gets a Lambda function by path and method.
+
+```typescript
+getLambdaFunction(path: string, method?: string): lambda.Function | undefined
+```
+
+**Parameters:**
+- `path`: The API path (e.g., '/users')
+- `method`: The HTTP method (defaults to 'GET')
+
+**Returns:**
+- The Lambda function or undefined if not found
+
+**Example:**
+```typescript
+const usersFunction = webApp.getLambdaFunction('/users', 'GET');
+const createUserFunction = webApp.getLambdaFunction('/users', 'POST');
+```
+
+##### grantDynamoDBAccess
+
+Grants DynamoDB access to a Lambda function.
+
+```typescript
+grantDynamoDBAccess(
+  lambdaFunction: lambda.Function,
+  table: any,
+  accessType?: 'read' | 'write' | 'readwrite'
+): void
+```
+
+**Parameters:**
+- `lambdaFunction`: The Lambda function to grant access to
+- `table`: The DynamoDB table to grant access to
+- `accessType`: The type of access to grant (defaults to 'readwrite')
+
+**Example:**
+```typescript
+const userFunction = webApp.addResource({
+  path: '/users',
+  lambdaSourcePath: './lambda/users',
+  requiresAuth: true
 });
+
+webApp.grantDynamoDBAccess(userFunction, myTable, 'readwrite');
+```
+
+##### getExportableResourceIds
+
+Gets exportable resource IDs for use in extension stacks.
+
+```typescript
+getExportableResourceIds(): ExportableResourceIds
+```
+
+**Returns:**
+- Object containing resource IDs that can be used by extension stacks
+
+**Example:**
+```typescript
+const resourceIds = mainStack.getExportableResourceIds();
+// Use resourceIds in extension stacks
 ```
 
 ## Interfaces
 
-### ServerlessWebAppConstructProps
+### CDKServerlessAgenticAPIProps
 
-Configuration properties for the ServerlessWebAppConstruct.
+Configuration properties for the CDKServerlessAgenticAPI.
 
 ```typescript
-interface ServerlessWebAppConstructProps {
+interface CDKServerlessAgenticAPIProps {
   readonly domainName?: string;
   readonly certificateArn?: string;
   readonly bucketName?: string;
   readonly userPoolName?: string;
   readonly apiName?: string;
   readonly enableLogging?: boolean;
+  readonly lambdaSourcePath?: string;
+  readonly errorPagesPath?: string;
+  readonly extensionMode?: ExtensionModeConfig;
+  readonly skipResources?: SkipResourcesConfig;
 }
 ```
 
@@ -132,6 +206,10 @@ interface ServerlessWebAppConstructProps {
 | `userPoolName` | `string` | No | CDK generated name | Custom name for the Cognito User Pool |
 | `apiName` | `string` | No | CDK generated name | Custom name for the API Gateway |
 | `enableLogging` | `boolean` | No | `true` | Enable detailed logging for all components |
+| `lambdaSourcePath` | `string` | No | Bundled lambda directory | Custom path to the directory containing Lambda function source code for default endpoints |
+| `errorPagesPath` | `string` | No | Bundled error-pages directory | Custom path to the directory containing error page HTML files |
+| `extensionMode` | `ExtensionModeConfig` | No | - | Extension mode configuration - use existing resources from another stack |
+| `skipResources` | `SkipResourcesConfig` | No | - | Skip creating certain resources (for extension mode) |
 
 ### AddResourceOptions
 
@@ -156,6 +234,8 @@ interface AddResourceOptions {
 | `requiresAuth` | `boolean` | No | `false` | Whether the resource requires authentication |
 | `cognitoGroup` | `string` | No | - | Cognito group required to access this resource |
 | `environment` | `{ [key: string]: string }` | No | - | Environment variables to pass to the Lambda function |
+| `enableDLQ` | `boolean` | No | `false` | Whether to enable Dead Letter Queue for the Lambda function |
+| `enableHealthAlarms` | `boolean` | No | `false` | Whether to enable health alarms for the Lambda function |
 
 ### ResourceConfig
 
@@ -180,6 +260,8 @@ interface ResourceConfig {
 | `cognitoGroup` | `string` | Cognito group required to access this resource |
 | `lambdaSourcePath` | `string` | Path to the Lambda function source directory |
 | `environment` | `{ [key: string]: string }` | Environment variables for the Lambda function |
+| `enableDLQ` | `boolean` | Whether Dead Letter Queue is enabled for the Lambda function |
+| `enableHealthAlarms` | `boolean` | Whether health alarms are enabled for the Lambda function |
 
 ### LambdaFunctionEntry
 
@@ -216,6 +298,74 @@ interface LambdaFunctionOptions {
 | `sourcePath` | `string` | Path to the directory containing the Lambda function source code |
 | `environment` | `{ [key: string]: string }` | Environment variables to pass to the Lambda function |
 | `additionalPolicies` | `any[]` | Additional IAM policy statements to attach to the Lambda execution role |
+
+### ExtensionModeConfig
+
+Configuration for extension mode - using existing resources from another stack.
+
+```typescript
+interface ExtensionModeConfig {
+  readonly apiId?: string;
+  readonly userPoolId?: string;
+  readonly userPoolClientId?: string;
+  readonly bucketName?: string;
+  readonly distributionId?: string;
+  readonly cognitoAuthorizerId?: string;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `apiId` | `string` | Existing API Gateway REST API ID |
+| `userPoolId` | `string` | Existing Cognito User Pool ID |
+| `userPoolClientId` | `string` | Existing Cognito User Pool Client ID |
+| `bucketName` | `string` | Existing S3 bucket name |
+| `distributionId` | `string` | Existing CloudFront distribution ID |
+| `cognitoAuthorizerId` | `string` | Existing Cognito authorizer ID |
+
+### SkipResourcesConfig
+
+Configuration for skipping resource creation.
+
+```typescript
+interface SkipResourcesConfig {
+  readonly skipBucket?: boolean;
+  readonly skipDistribution?: boolean;
+  readonly skipLoggingBucket?: boolean;
+  readonly skipDefaultEndpoints?: boolean;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `skipBucket` | `boolean` | Skip creating S3 bucket |
+| `skipDistribution` | `boolean` | Skip creating CloudFront distribution |
+| `skipLoggingBucket` | `boolean` | Skip creating logging bucket |
+| `skipDefaultEndpoints` | `boolean` | Skip creating default endpoints (/health, /whoami, /config) |
+
+### ExportableResourceIds
+
+Exportable resource IDs for use in extension stacks.
+
+```typescript
+interface ExportableResourceIds {
+  readonly apiId: string;
+  readonly userPoolId: string;
+  readonly userPoolClientId: string;
+  readonly bucketName?: string;
+  readonly distributionId?: string;
+  readonly cognitoAuthorizerId: string;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `apiId` | `string` | API Gateway REST API ID |
+| `userPoolId` | `string` | Cognito User Pool ID |
+| `userPoolClientId` | `string` | Cognito User Pool Client ID |
+| `bucketName` | `string` | S3 bucket name |
+| `distributionId` | `string` | CloudFront distribution ID |
+| `cognitoAuthorizerId` | `string` | Cognito authorizer ID |
 
 ### SecurityValidationOptions
 
