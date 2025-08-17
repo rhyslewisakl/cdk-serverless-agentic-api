@@ -78,6 +78,16 @@ export interface AddResourceOptions {
     readonly environment?: {
         [key: string]: string;
     };
+    /**
+     * Whether to enable Dead Letter Queue for the Lambda function
+     * @default false
+     */
+    readonly enableDLQ?: boolean;
+    /**
+     * Whether to enable health alarms for the Lambda function
+     * @default false
+     */
+    readonly enableHealthAlarms?: boolean;
 }
 /**
  * Configuration for a resource within the construct
@@ -109,6 +119,14 @@ export interface ResourceConfig {
     readonly environment?: {
         [key: string]: string;
     };
+    /**
+     * Whether Dead Letter Queue is enabled for the Lambda function
+     */
+    readonly enableDLQ?: boolean;
+    /**
+     * Whether health alarms are enabled for the Lambda function
+     */
+    readonly enableHealthAlarms?: boolean;
 }
 /**
  * Registry entry for Lambda functions

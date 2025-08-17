@@ -16,7 +16,7 @@ import { ResourceConfig } from './types';
  */
 export declare function createLambdaFunction(scope: Construct, functionName: string, sourcePath: string, constructId: string, environment?: {
     [key: string]: string;
-}, additionalPolicies?: iam.PolicyStatement[]): lambda.Function;
+}, additionalPolicies?: iam.PolicyStatement[], enableDLQ?: boolean): lambda.Function;
 /**
  * Creates a Lambda function specifically for API Gateway integration
  *
