@@ -1,7 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { CDKServerlessAgenticAPI } from 'cdk-serverless-agentic-api';
 
@@ -111,19 +109,23 @@ export class ReactExampleAppStack extends cdk.Stack {
       description: 'API Gateway URL',
     });
 
-    new cdk.CfnOutput(this, 'CloudFrontUrl', {
-      value: `https://${webApp.distribution.distributionDomainName}`,
-      description: 'CloudFront Distribution URL',
-    });
+    if (webApp.distribution) {
+      new cdk.CfnOutput(this, 'CloudFrontUrl', {
+        value: `https://${webApp.distribution.distributionDomainName}`,
+        description: 'CloudFront Distribution URL',
+      });
+    }
 
     new cdk.CfnOutput(this, 'UserItemsTableName', {
       value: userItemsTable.tableName,
       description: 'DynamoDB User Items Table Name',
     });
 
-    new cdk.CfnOutput(this, 'S3BucketName', {
-      value: webApp.bucket.bucketName,
-      description: 'S3 Website Bucket Name',
-    });
+    if (webApp.bucket) {
+      new cdk.CfnOutput(this, 'S3BucketName', {
+        value: webApp.bucket.bucketName,
+        description: 'S3 Website Bucket Name',
+      });
+    }
   }
 }
