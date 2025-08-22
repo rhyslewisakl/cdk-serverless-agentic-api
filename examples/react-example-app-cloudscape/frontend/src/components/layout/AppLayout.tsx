@@ -35,12 +35,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
     {
       type: 'link' as const,
       text: 'Dashboard',
-      href: '/dashboard',
+      href: '#/dashboard',
     },
     {
       type: 'link' as const,
       text: 'Items',
-      href: '/items',
+      href: '#/items',
     },
   ];
 
@@ -48,12 +48,13 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
   const sideNavigation = (
     <SideNavigation
-      activeHref={location.pathname}
+      activeHref={`#${location.pathname}`}
       header={{ href: '#/', text: 'Navigation' }}
       items={navigationItems}
       onFollow={({ detail }) => {
         if (!detail.external) {
-          navigate(detail.href);
+          const path = detail.href.replace('#', '');
+          navigate(path);
         }
       }}
     />
