@@ -49,7 +49,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const sideNavigation = (
     <SideNavigation
       activeHref={location.pathname}
-      header={{ href: '/', text: 'Navigation' }}
+      header={{ href: '#/', text: 'Navigation' }}
       items={navigationItems}
       onFollow={({ detail }) => {
         if (!detail.external) {
@@ -60,8 +60,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   );
 
   const breadcrumbItems = [
-    { text: 'Home', href: '/' },
-    ...breadcrumbs.map(b => ({ ...b, href: b.href || '/' })),
+    { text: 'Home', href: '#/' },
+    ...breadcrumbs.map(b => ({ ...b, href: b.href || '#/' })),
   ];
 
   return (
