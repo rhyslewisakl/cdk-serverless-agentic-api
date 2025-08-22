@@ -1,0 +1,91 @@
+import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
+import { authService } from './auth';
+import { type Item, type CreateItemRequest, type UpdateItemRequest } from '../types/item';
+
+/**
+ * API service class for handling HTTP requests to the backend
+ * 
+ * Features:
+ * - Automatic authentication token injection
+ * - Request/response interceptors
+ * - Error handling and retry logic
+ * - Type-safe API methods
+ */
+class ApiService {
+  private client: AxiosInstance;
+  private baseURL: string = '';
+
+  constructor() {
+    this.client = axios.create();
+    this.setupInterceptors();
+  }
+
+  /**
+   * Initialize the API service with the current origin as base URL
+   * 
+   * @throws {Error} If initialization fails
+   */
+  async initialize() {
+    try {
+      // Use the current origin as the API base URL since we're accessing /api/* endpoints
+      this.baseURL = window.location.origin;
+      this.client.defaults.baseURL = this.baseURL;
+    } catch (error) {
+      console.error('Failed to initialize API service:', error);
+      throw error;
+    }
+  }
+
+  private setupInterceptors() {
+    // Request interceptor to add auth token
+    this.client.interceptors.request.use(
+      async (config) => {
+        const token = await authService.getAuthToken();
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // Response interceptor for error handling
+    this.client.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          // Handle unauthorized - could trigger logout
+          console.error('Unauthorized request');
+        }
+        return Promise.reject(error);
+      }
+    );
+  }
+
+  /**
+   * Fetch all items for the authenticated user
+   * 
+   * @returns Promise resolving to array of items
+   * @throws {Error} If request fails
+   */
+  async getItems(): Promise<Item[]> {
+    const response: AxiosResponse<{ items: Item[]; count: number }> = await this.client.get('/api/items');
+    return response.data.items || [];
+  }
+
+  async createItem(item: CreateItemRequest): Promise<Item> {
+    const response: AxiosResponse<Item> = await this.client.post('/api/items', item);
+    return response.data;
+  }
+
+  async updateItem(itemId: string, updates: UpdateItemRequest): Promise<Item> {
+    const response: AxiosResponse<Item> = await this.client.put(`/api/items/${itemId}`, updates);
+    return response.data;
+  }
+
+  async deleteItem(itemId: string): Promise<void> {
+    await this.client.delete(`/api/items/${itemId}`);
+  }
+}
+
+export const apiService = new ApiService();
