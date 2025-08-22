@@ -21,7 +21,8 @@ interface ItemsListProps {
 
 export const ItemsList: React.FC<ItemsListProps> = ({ onCreateClick, onEditClick }) => {
   const dispatch = useAppDispatch();
-  const { items, isLoading, error } = useAppSelector((state) => state.items);
+  const { items: rawItems, isLoading, error } = useAppSelector((state) => state.items);
+  const items = Array.isArray(rawItems) ? rawItems : [];
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<Item | null>(null);

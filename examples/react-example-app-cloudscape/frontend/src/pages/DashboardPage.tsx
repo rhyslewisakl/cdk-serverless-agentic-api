@@ -27,14 +27,16 @@ export const DashboardPage: React.FC = () => {
     }
   }, [dispatch, items.length]);
 
+  const safeItems = Array.isArray(items) ? items : [];
+  
   const stats = {
-    totalItems: items.length,
-    activeItems: items.filter(item => item.status === 'active').length,
-    inactiveItems: items.filter(item => item.status === 'inactive').length,
-    pendingItems: items.filter(item => item.status === 'pending').length,
+    totalItems: safeItems.length,
+    activeItems: safeItems.filter(item => item.status === 'active').length,
+    inactiveItems: safeItems.filter(item => item.status === 'inactive').length,
+    pendingItems: safeItems.filter(item => item.status === 'pending').length,
   };
 
-  const recentItems = items.slice(0, 5);
+  const recentItems = safeItems.slice(0, 5);
 
   return (
     <AppLayout 

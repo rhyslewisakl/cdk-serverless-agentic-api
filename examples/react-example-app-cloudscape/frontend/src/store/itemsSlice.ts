@@ -19,7 +19,8 @@ export const fetchItemsAsync = createAsyncThunk(
   'items/fetchItems',
   async (_, { rejectWithValue }) => {
     try {
-      return await apiService.getItems();
+      const result = await apiService.getItems();
+      return Array.isArray(result) ? result : [];
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch items');
     }
