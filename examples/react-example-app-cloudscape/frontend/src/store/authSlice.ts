@@ -22,8 +22,12 @@ const initialState: AuthState = {
 
 export const signInAsync = createAsyncThunk(
   'auth/signIn',
-  async (params: SignInParams, { rejectWithValue }) => {
+  async (params: SignInParams, { rejectWithValue, getState }) => {
     try {
+      const state = getState() as any;
+      if (!state.app.isInitialized) {
+        return rejectWithValue('App is not initialized yet');
+      }
       await authService.signIn(params);
       const user = await authService.getCurrentUser();
       return {
@@ -38,8 +42,12 @@ export const signInAsync = createAsyncThunk(
 
 export const signUpAsync = createAsyncThunk(
   'auth/signUp',
-  async (params: SignUpParams, { rejectWithValue }) => {
+  async (params: SignUpParams, { rejectWithValue, getState }) => {
     try {
+      const state = getState() as any;
+      if (!state.app.isInitialized) {
+        return rejectWithValue('App is not initialized yet');
+      }
       await authService.signUp(params);
       return params.email;
     } catch (error: any) {
@@ -50,8 +58,12 @@ export const signUpAsync = createAsyncThunk(
 
 export const confirmSignUpAsync = createAsyncThunk(
   'auth/confirmSignUp',
-  async (params: ConfirmSignUpParams, { rejectWithValue }) => {
+  async (params: ConfirmSignUpParams, { rejectWithValue, getState }) => {
     try {
+      const state = getState() as any;
+      if (!state.app.isInitialized) {
+        return rejectWithValue('App is not initialized yet');
+      }
       await authService.confirmSignUp(params);
       return params.email;
     } catch (error: any) {
