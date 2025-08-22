@@ -13,9 +13,8 @@ class ApiService {
 
   async initialize() {
     try {
-      const response = await fetch('/api/config');
-      const config = await response.json();
-      this.baseURL = config.api.endpoints[0].endpoint;
+      // Use the current origin as the API base URL since we're accessing /api/* endpoints
+      this.baseURL = window.location.origin;
       this.client.defaults.baseURL = this.baseURL;
     } catch (error) {
       console.error('Failed to initialize API service:', error);

@@ -24,14 +24,6 @@ export const configureAmplify = async () => {
           },
         },
       },
-      API: {
-        REST: {
-          api: {
-            endpoint: config.api.endpoints[0].endpoint,
-            region: config.auth.region,
-          },
-        },
-      },
     });
     
     return config;
