@@ -6,6 +6,8 @@ import { initializeAppAsync } from './store/appSlice';
 import { checkAuthAsync } from './store/authSlice';
 import { PrivateRoute } from './components/PrivateRoute';
 import { DashboardPage } from './pages/DashboardPage';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { NotificationProvider } from './components/common/NotificationProvider';
 import { Spinner, Box } from '@cloudscape-design/components';
 import '@cloudscape-design/global-styles/index.css';
 
@@ -31,17 +33,22 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <PrivateRoute>
-      <DashboardPage />
-    </PrivateRoute>
+    <>
+      <PrivateRoute>
+        <DashboardPage />
+      </PrivateRoute>
+      <NotificationProvider />
+    </>
   );
 };
 
 function App() {
   return (
-    <Provider store={store}>
-      <AppContent />
-    </Provider>
+    <ErrorBoundary>
+      <Provider store={store}>
+        <AppContent />
+      </Provider>
+    </ErrorBoundary>
   );
 }
 

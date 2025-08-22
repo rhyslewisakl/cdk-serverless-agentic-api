@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import { apiService } from '../services/api';
 import { type Item, type CreateItemRequest, type UpdateItemRequest } from '../types/item';
+import { showSuccess, showError } from './notificationSlice';
 
 interface ItemsState {
   items: Item[];
@@ -27,34 +28,45 @@ export const fetchItemsAsync = createAsyncThunk(
 
 export const createItemAsync = createAsyncThunk(
   'items/createItem',
-  async (item: CreateItemRequest, { rejectWithValue }) => {
+  async (item: CreateItemRequest, { rejectWithValue, dispatch }) => {
     try {
-      return await apiService.createItem(item);
+      const result = await apiService.createItem(item);
+      dispatch(showSuccess('Item created successfully'));
+      return result;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to create item');
+      const message = error.response?.data?.message || 'Failed to create item';
+      dispatch(showError(message));
+      return rejectWithValue(message);
     }
   }
 );
 
 export const updateItemAsync = createAsyncThunk(
   'items/updateItem',
-  async ({ itemId, updates }: { itemId: string; updates: UpdateItemRequest }, { rejectWithValue }) => {
+  async ({ itemId, updates }: { itemId: string; updates: UpdateItemRequest }, { rejectWithValue, dispatch }) => {
     try {
-      return await apiService.updateItem(itemId, updates);
+      const result = await apiService.updateItem(itemId, updates);
+      dispatch(showSuccess('Item updated successfully'));
+      return result;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update item');
+      const message = error.response?.data?.message || 'Failed to update item';
+      dispatch(showError(message));
+      return rejectWithValue(message);
     }
   }
 );
 
 export const deleteItemAsync = createAsyncThunk(
   'items/deleteItem',
-  async (itemId: string, { rejectWithValue }) => {
+  async (itemId: string, { rejectWithValue, dispatch }) => {
     try {
       await apiService.deleteItem(itemId);
+      dispatch(showSuccess('Item deleted successfully'));
       return itemId;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to delete item');
+      const message = error.response?.data?.message || 'Failed to delete item';
+      dispatch(showError(message));
+      return rejectWithValue(message);
     }
   }
 );

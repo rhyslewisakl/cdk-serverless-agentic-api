@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import { authService, type SignInParams, type SignUpParams, type ConfirmSignUpParams } from '../services/auth';
+import { showSuccess } from './notificationSlice';
 
 export interface User {
   userId: string;
@@ -42,13 +43,14 @@ export const signInAsync = createAsyncThunk(
 
 export const signUpAsync = createAsyncThunk(
   'auth/signUp',
-  async (params: SignUpParams, { rejectWithValue, getState }) => {
+  async (params: SignUpParams, { rejectWithValue, getState, dispatch }) => {
     try {
       const state = getState() as any;
       if (!state.app.isInitialized) {
         return rejectWithValue('App is not initialized yet');
       }
       await authService.signUp(params);
+      dispatch(showSuccess('Account created successfully! Please check your email for confirmation.'));
       return params.email;
     } catch (error: any) {
       return rejectWithValue(error.message || 'Sign up failed');
@@ -58,13 +60,14 @@ export const signUpAsync = createAsyncThunk(
 
 export const confirmSignUpAsync = createAsyncThunk(
   'auth/confirmSignUp',
-  async (params: ConfirmSignUpParams, { rejectWithValue, getState }) => {
+  async (params: ConfirmSignUpParams, { rejectWithValue, getState, dispatch }) => {
     try {
       const state = getState() as any;
       if (!state.app.isInitialized) {
         return rejectWithValue('App is not initialized yet');
       }
       await authService.confirmSignUp(params);
+      dispatch(showSuccess('Email confirmed successfully! You can now sign in.'));
       return params.email;
     } catch (error: any) {
       return rejectWithValue(error.message || 'Confirmation failed');
@@ -74,9 +77,10 @@ export const confirmSignUpAsync = createAsyncThunk(
 
 export const signOutAsync = createAsyncThunk(
   'auth/signOut',
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, dispatch }) => {
     try {
       await authService.signOut();
+      dispatch(showSuccess('Signed out successfully'));
       return;
     } catch (error: any) {
       return rejectWithValue(error.message || 'Sign out failed');
