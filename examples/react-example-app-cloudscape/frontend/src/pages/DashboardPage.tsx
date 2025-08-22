@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Container,
   Header,
@@ -8,12 +8,21 @@ import {
   ColumnLayout,
   StatusIndicator,
 } from '@cloudscape-design/components';
-import { useAppSelector } from '../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import { fetchItemsAsync } from '../store/itemsSlice';
 import { AppLayout } from '../components/layout/AppLayout';
+import { SkeletonLoader } from '../components/common/SkeletonLoader';
 
 export const DashboardPage: React.FC = () => {
-  const { items } = useAppSelector((state) => state.items);
+  const dispatch = useAppDispatch();
+  const { items, isLoading } = useAppSelector((state) => state.items);
   const { user } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (items.length === 0) {
+      dispatch(fetchItemsAsync());
+    }
+  }, [dispatch, items.length]);
 
   const stats = {
     totalItems: items.length,
@@ -74,7 +83,9 @@ export const DashboardPage: React.FC = () => {
 
         <Container>
           <Header variant="h2">Recent Items</Header>
-          {recentItems.length > 0 ? (
+          {isLoading && items.length === 0 ? (
+            <SkeletonLoader rows={3} height="120px" />
+          ) : recentItems.length > 0 ? (
             <Cards
               cardDefinition={{
                 header: item => item.title,
@@ -104,6 +115,7 @@ export const DashboardPage: React.FC = () => {
                 { minWidth: 800, cards: 3 },
               ]}
               items={recentItems}
+              loading={isLoading}
               loadingText="Loading items"
               empty={
                 <Box textAlign="center" color="inherit">

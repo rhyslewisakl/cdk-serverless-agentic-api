@@ -11,6 +11,7 @@ import {
 } from '@cloudscape-design/components';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { fetchItemsAsync, deleteItemAsync, clearError } from '../../store/itemsSlice';
+import { LoadingSpinner } from '../common/LoadingSpinner';
 import { type Item } from '../../types/item';
 
 interface ItemsListProps {
@@ -24,6 +25,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({ onCreateClick, onEditClick
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<Item | null>(null);
+  const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
 
   useEffect(() => {
     dispatch(fetchItemsAsync());
@@ -36,9 +38,11 @@ export const ItemsList: React.FC<ItemsListProps> = ({ onCreateClick, onEditClick
 
   const confirmDelete = async () => {
     if (itemToDelete) {
+      setDeletingItemId(itemToDelete.itemId);
       await dispatch(deleteItemAsync(itemToDelete.itemId));
       setDeleteModalVisible(false);
       setItemToDelete(null);
+      setDeletingItemId(null);
     }
   };
 
@@ -90,7 +94,11 @@ export const ItemsList: React.FC<ItemsListProps> = ({ onCreateClick, onEditClick
           <Button onClick={() => onEditClick(item)}>
             Edit
           </Button>
-          <Button variant="normal" onClick={() => handleDelete(item)}>
+          <Button 
+            variant="normal" 
+            onClick={() => handleDelete(item)}
+            loading={deletingItemId === item.itemId}
+          >
             Delete
           </Button>
         </SpaceBetween>
@@ -113,7 +121,8 @@ export const ItemsList: React.FC<ItemsListProps> = ({ onCreateClick, onEditClick
       <Table
         columnDefinitions={columnDefinitions}
         items={items}
-        loading={isLoading}
+        loading={isLoading && items.length === 0}
+        loadingText="Loading items..."
         selectedItems={selectedItems}
         onSelectionChange={({ detail }) => setSelectedItems(detail.selectedItems)}
         selectionType="multi"
@@ -130,12 +139,16 @@ export const ItemsList: React.FC<ItemsListProps> = ({ onCreateClick, onEditClick
           </Header>
         }
         empty={
-          <Box margin={{ vertical: 'xs' }} textAlign="center" color="inherit">
-            <SpaceBetween size="m">
-              <b>No items</b>
-              <Button onClick={onCreateClick}>Create Item</Button>
-            </SpaceBetween>
-          </Box>
+          isLoading ? (
+            <LoadingSpinner text="Loading items..." />
+          ) : (
+            <Box margin={{ vertical: 'xs' }} textAlign="center" color="inherit">
+              <SpaceBetween size="m">
+                <b>No items</b>
+                <Button onClick={onCreateClick}>Create Item</Button>
+              </SpaceBetween>
+            </Box>
+          )
         }
         sortingDisabled={false}
       />
