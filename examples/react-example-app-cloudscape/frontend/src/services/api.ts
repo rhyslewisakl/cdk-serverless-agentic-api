@@ -50,8 +50,8 @@ class ApiService {
 
   // Items API methods
   async getItems(): Promise<Item[]> {
-    const response: AxiosResponse<Item[]> = await this.client.get('/api/items');
-    return response.data;
+    const response: AxiosResponse<{ items: Item[]; count: number }> = await this.client.get('/api/items');
+    return response.data.items || [];
   }
 
   async createItem(item: CreateItemRequest): Promise<Item> {
