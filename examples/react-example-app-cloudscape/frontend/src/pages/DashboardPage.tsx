@@ -47,7 +47,10 @@ export const DashboardPage: React.FC = () => {
           Welcome back, {user?.email?.split('@')[0]}!
         </Header>
 
-        <ColumnLayout columns={4} variant="text-grid">
+        <ColumnLayout 
+          columns={4} 
+          variant="text-grid"
+        >
           <Container>
             <Box textAlign="center">
               <Box variant="h2" color="text-status-info">
@@ -115,8 +118,9 @@ export const DashboardPage: React.FC = () => {
               }}
               cardsPerRow={[
                 { cards: 1 },
-                { minWidth: 500, cards: 2 },
-                { minWidth: 800, cards: 3 },
+                { minWidth: 400, cards: 2 },
+                { minWidth: 600, cards: 2 },
+                { minWidth: 900, cards: 3 },
               ]}
               items={recentItems}
               loading={isLoading}

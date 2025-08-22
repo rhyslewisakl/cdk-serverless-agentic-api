@@ -69,6 +69,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
     <CloudscapeAppLayout
       navigation={sideNavigation}
       navigationOpen={navigationOpen}
+      navigationWidth={280}
       onNavigationChange={({ detail }) => setNavigationOpen(detail.open)}
       breadcrumbs={
         breadcrumbItems.length > 1 ? (
@@ -76,17 +77,21 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         ) : undefined
       }
       content={
-        <Box padding="l">
+        <Box padding={{ vertical: 'l', horizontal: 's' }}>
           <Box float="right" margin={{ bottom: 'l' }}>
-            <Button onClick={handleSignOut}>
+            <Button 
+              onClick={handleSignOut}
+              variant="normal"
+              iconName="user-profile"
+            >
               Sign Out ({user?.email?.split('@')[0] || 'User'})
             </Button>
           </Box>
           {children}
         </Box>
       }
-
       toolsHide
+      maxContentWidth={1200}
     />
   );
 };

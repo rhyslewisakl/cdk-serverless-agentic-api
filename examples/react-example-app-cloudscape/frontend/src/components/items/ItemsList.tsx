@@ -127,6 +127,8 @@ export const ItemsList: React.FC<ItemsListProps> = ({ onCreateClick, onEditClick
         selectedItems={selectedItems}
         onSelectionChange={({ detail }) => setSelectedItems(detail.selectedItems)}
         selectionType="multi"
+        variant="container"
+        stickyHeader
         header={
           <Header
             counter={`(${items.length})`}
@@ -152,20 +154,29 @@ export const ItemsList: React.FC<ItemsListProps> = ({ onCreateClick, onEditClick
           )
         }
         sortingDisabled={false}
+        resizableColumns
       />
 
       <Modal
         visible={deleteModalVisible}
         onDismiss={() => setDeleteModalVisible(false)}
         header="Delete Item"
-        closeAriaLabel="Close modal"
+        closeAriaLabel="Close delete confirmation dialog"
         footer={
           <Box float="right">
             <SpaceBetween direction="horizontal" size="xs">
-              <Button variant="link" onClick={() => setDeleteModalVisible(false)}>
+              <Button 
+                variant="link" 
+                onClick={() => setDeleteModalVisible(false)}
+                ariaLabel="Cancel deletion"
+              >
                 Cancel
               </Button>
-              <Button variant="primary" onClick={confirmDelete}>
+              <Button 
+                variant="primary" 
+                onClick={confirmDelete}
+                ariaLabel={`Confirm deletion of ${itemToDelete?.title}`}
+              >
                 Delete
               </Button>
             </SpaceBetween>

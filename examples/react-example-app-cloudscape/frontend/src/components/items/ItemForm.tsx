@@ -134,7 +134,11 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
             </Alert>
           )}
           
-          <FormField label="Title" errorText={titleError}>
+          <FormField 
+            label="Title" 
+            errorText={titleError}
+            description="Enter a descriptive title for your item"
+          >
             <Input
               value={title}
               onChange={({ detail }) => {
@@ -142,10 +146,16 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
                 if (titleError) setTitleError('');
               }}
               placeholder="Enter item title"
+              ariaLabel="Item title"
+              invalid={!!titleError}
             />
           </FormField>
           
-          <FormField label="Description" errorText={descriptionError}>
+          <FormField 
+            label="Description" 
+            errorText={descriptionError}
+            description="Provide a detailed description of your item"
+          >
             <Textarea
               value={description}
               onChange={({ detail }) => {
@@ -154,24 +164,34 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
               }}
               placeholder="Enter item description"
               rows={4}
+              ariaLabel="Item description"
+              invalid={!!descriptionError}
             />
           </FormField>
           
-          <FormField label="Category">
+          <FormField 
+            label="Category"
+            description="Choose the category that best fits your item"
+          >
             <Select
               selectedOption={categoryOptions.find(opt => opt.value === category) || null}
               onChange={({ detail }) => setCategory(detail.selectedOption.value || 'general')}
               options={categoryOptions}
               placeholder="Select category"
+              ariaLabel="Item category"
             />
           </FormField>
           
-          <FormField label="Status">
+          <FormField 
+            label="Status"
+            description="Set the current status of your item"
+          >
             <Select
               selectedOption={statusOptions.find(opt => opt.value === status) || null}
               onChange={({ detail }) => setStatus((detail.selectedOption.value as 'active' | 'inactive' | 'pending') || 'active')}
               options={statusOptions}
               placeholder="Select status"
+              ariaLabel="Item status"
             />
           </FormField>
         </SpaceBetween>
