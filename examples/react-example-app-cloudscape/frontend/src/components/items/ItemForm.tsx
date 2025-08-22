@@ -13,18 +13,26 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { createItemAsync, updateItemAsync, clearError } from '../../store/itemsSlice';
 import { type Item, type CreateItemRequest, type UpdateItemRequest } from '../../types/item';
 
+/**
+ * Props for the ItemForm component
+ */
 interface ItemFormProps {
+  /** Optional item to edit (if not provided, creates new item) */
   item?: Item;
+  /** Callback fired when form is successfully submitted */
   onSuccess: () => void;
+  /** Callback fired when form is cancelled */
   onCancel: () => void;
 }
 
+/** Available status options for items */
 const statusOptions = [
   { label: 'Active', value: 'active' },
   { label: 'Inactive', value: 'inactive' },
   { label: 'Pending', value: 'pending' },
 ];
 
+/** Available category options for items */
 const categoryOptions = [
   { label: 'General', value: 'general' },
   { label: 'Work', value: 'work' },
@@ -32,6 +40,18 @@ const categoryOptions = [
   { label: 'Project', value: 'project' },
 ];
 
+/**
+ * Form component for creating and editing items
+ * 
+ * Features:
+ * - Real-time form validation
+ * - Accessibility compliant inputs
+ * - Loading states during submission
+ * - Error handling and display
+ * 
+ * @param props - The component props
+ * @returns The rendered form component
+ */
 export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel }) => {
   const dispatch = useAppDispatch();
   const { isLoading, error } = useAppSelector((state) => state.items);

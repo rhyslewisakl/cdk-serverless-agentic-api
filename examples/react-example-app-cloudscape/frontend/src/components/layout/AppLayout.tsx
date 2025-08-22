@@ -10,11 +10,28 @@ import {
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { signOutAsync } from '../../store/authSlice';
 
+/**
+ * Props for the AppLayout component
+ */
 interface AppLayoutProps {
+  /** The main content to render inside the layout */
   children: React.ReactNode;
+  /** Optional breadcrumb navigation items */
   breadcrumbs?: Array<{ text: string; href?: string }>;
 }
 
+/**
+ * Main application layout component using AWS Cloudscape AppLayout
+ * 
+ * Provides:
+ * - Responsive sidebar navigation
+ * - Breadcrumb navigation
+ * - User authentication controls
+ * - Consistent page structure
+ * 
+ * @param props - The component props
+ * @returns The rendered layout component
+ */
 export const AppLayout: React.FC<AppLayoutProps> = ({ 
   children, 
   breadcrumbs = [] 

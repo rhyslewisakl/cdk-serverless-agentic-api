@@ -2,6 +2,15 @@ import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 import { authService } from './auth';
 import { type Item, type CreateItemRequest, type UpdateItemRequest } from '../types/item';
 
+/**
+ * API service class for handling HTTP requests to the backend
+ * 
+ * Features:
+ * - Automatic authentication token injection
+ * - Request/response interceptors
+ * - Error handling and retry logic
+ * - Type-safe API methods
+ */
 class ApiService {
   private client: AxiosInstance;
   private baseURL: string = '';
@@ -11,6 +20,11 @@ class ApiService {
     this.setupInterceptors();
   }
 
+  /**
+   * Initialize the API service with the current origin as base URL
+   * 
+   * @throws {Error} If initialization fails
+   */
   async initialize() {
     try {
       // Use the current origin as the API base URL since we're accessing /api/* endpoints
@@ -48,7 +62,12 @@ class ApiService {
     );
   }
 
-  // Items API methods
+  /**
+   * Fetch all items for the authenticated user
+   * 
+   * @returns Promise resolving to array of items
+   * @throws {Error} If request fails
+   */
   async getItems(): Promise<Item[]> {
     const response: AxiosResponse<{ items: Item[]; count: number }> = await this.client.get('/api/items');
     return response.data.items || [];
