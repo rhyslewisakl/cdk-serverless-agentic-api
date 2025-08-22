@@ -5,7 +5,7 @@ import { configureAmplify } from './config/amplify';
 import { useAppDispatch } from './hooks/redux';
 import { checkAuthAsync } from './store/authSlice';
 import { PrivateRoute } from './components/PrivateRoute';
-import { Box, Header } from '@cloudscape-design/components';
+import { ItemsPage } from './pages/ItemsPage';
 import '@cloudscape-design/global-styles/index.css';
 
 const AppContent: React.FC = () => {
@@ -26,10 +26,7 @@ const AppContent: React.FC = () => {
 
   return (
     <PrivateRoute>
-      <Box padding="l">
-        <Header variant="h1">React Cloudscape Example</Header>
-        <p>Welcome to the authenticated application!</p>
-      </Box>
+      <ItemsPage />
     </PrivateRoute>
   );
 };
