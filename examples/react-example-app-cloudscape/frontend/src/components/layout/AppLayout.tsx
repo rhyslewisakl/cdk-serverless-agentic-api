@@ -78,14 +78,21 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       }
       content={
         <Box padding={{ vertical: 'l', horizontal: 's' }}>
-          <Box float="right" margin={{ bottom: 'l' }}>
-            <Button 
-              onClick={handleSignOut}
-              variant="normal"
-              iconName="user-profile"
-            >
-              Sign Out ({user?.email?.split('@')[0] || 'User'})
-            </Button>
+          <Box margin={{ bottom: 'l' }}>
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'flex-end',
+              flexWrap: 'wrap',
+              gap: '8px'
+            }}>
+              <Button 
+                onClick={handleSignOut}
+                variant="normal"
+                iconName="user-profile"
+              >
+                Sign Out ({user?.email?.split('@')[0] || 'User'})
+              </Button>
+            </div>
           </Box>
           {children}
         </Box>
