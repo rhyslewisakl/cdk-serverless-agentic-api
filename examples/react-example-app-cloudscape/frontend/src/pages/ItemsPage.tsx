@@ -4,18 +4,14 @@ import {
   Header,
   SpaceBetween,
   Modal,
-  Button,
-  Box,
 } from '@cloudscape-design/components';
 import { ItemsList } from '../components/items/ItemsList';
 import { ItemForm } from '../components/items/ItemForm';
-import { useAppDispatch } from '../hooks/redux';
-import { signOutAsync } from '../store/authSlice';
+import { AppLayout } from '../components/layout/AppLayout';
 import { apiService } from '../services/api';
 import { type Item } from '../types/item';
 
 export const ItemsPage: React.FC = () => {
-  const dispatch = useAppDispatch();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
@@ -45,18 +41,13 @@ export const ItemsPage: React.FC = () => {
     setEditingItem(null);
   };
 
-  const handleSignOut = () => {
-    dispatch(signOutAsync());
-  };
-
   return (
-    <SpaceBetween direction="vertical" size="l">
+    <AppLayout 
+      breadcrumbs={[{ text: 'Items' }]}
+      activeNavItem="items"
+    >
       <Container>
         <SpaceBetween direction="vertical" size="l">
-          <Box float="right">
-            <Button onClick={handleSignOut}>Sign Out</Button>
-          </Box>
-          
           <Header variant="h1">Items Management</Header>
           
           <ItemsList
@@ -92,6 +83,6 @@ export const ItemsPage: React.FC = () => {
           />
         )}
       </Modal>
-    </SpaceBetween>
+    </AppLayout>
   );
 };

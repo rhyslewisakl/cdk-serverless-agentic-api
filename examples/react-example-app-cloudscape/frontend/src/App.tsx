@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from './hooks/redux';
 import { initializeAppAsync } from './store/appSlice';
 import { checkAuthAsync } from './store/authSlice';
 import { PrivateRoute } from './components/PrivateRoute';
-import { ItemsPage } from './pages/ItemsPage';
+import { DashboardPage } from './pages/DashboardPage';
 import { Spinner, Box } from '@cloudscape-design/components';
 import '@cloudscape-design/global-styles/index.css';
 
@@ -32,7 +32,7 @@ const AppContent: React.FC = () => {
 
   return (
     <PrivateRoute>
-      <ItemsPage />
+      <DashboardPage />
     </PrivateRoute>
   );
 };
