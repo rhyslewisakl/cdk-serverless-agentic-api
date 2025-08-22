@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   Header,
@@ -7,6 +8,7 @@ import {
   Box,
   ColumnLayout,
   StatusIndicator,
+  Button,
 } from '@cloudscape-design/components';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { fetchItemsAsync } from '../store/itemsSlice';
@@ -15,6 +17,7 @@ import { SkeletonLoader } from '../components/common/SkeletonLoader';
 
 export const DashboardPage: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { items, isLoading } = useAppSelector((state) => state.items);
   const { user } = useAppSelector((state) => state.auth);
 
@@ -36,7 +39,6 @@ export const DashboardPage: React.FC = () => {
   return (
     <AppLayout 
       breadcrumbs={[{ text: 'Dashboard' }]}
-      activeNavItem="dashboard"
     >
       <SpaceBetween direction="vertical" size="l">
         <Header variant="h1">
@@ -128,10 +130,18 @@ export const DashboardPage: React.FC = () => {
             />
           ) : (
             <Box textAlign="center" color="inherit">
-              <b>No items yet</b>
-              <Box variant="p" color="inherit">
-                Create your first item to get started.
-              </Box>
+              <SpaceBetween size="m">
+                <b>No items yet</b>
+                <Box variant="p" color="inherit">
+                  Create your first item to get started.
+                </Box>
+                <Button 
+                  variant="primary" 
+                  onClick={() => navigate('/items')}
+                >
+                  Create Your First Item
+                </Button>
+              </SpaceBetween>
             </Box>
           )}
         </Container>

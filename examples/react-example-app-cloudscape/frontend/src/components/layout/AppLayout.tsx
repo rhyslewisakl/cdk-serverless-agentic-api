@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   AppLayout as CloudscapeAppLayout,
   SideNavigation,
@@ -12,17 +13,19 @@ import { signOutAsync } from '../../store/authSlice';
 interface AppLayoutProps {
   children: React.ReactNode;
   breadcrumbs?: Array<{ text: string; href?: string }>;
-  activeNavItem?: string;
 }
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ 
   children, 
-  breadcrumbs = [], 
-  activeNavItem = 'items' 
+  breadcrumbs = [] 
 }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAppSelector((state) => state.auth);
   const [navigationOpen, setNavigationOpen] = useState(false);
+  
+
 
   const handleSignOut = () => {
     dispatch(signOutAsync());
@@ -32,12 +35,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
     {
       type: 'link' as const,
       text: 'Dashboard',
-      href: '#/dashboard',
+      href: '/dashboard',
     },
     {
       type: 'link' as const,
       text: 'Items',
-      href: '#/items',
+      href: '/items',
     },
   ];
 
@@ -45,15 +48,20 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
   const sideNavigation = (
     <SideNavigation
-      activeHref={`#/${activeNavItem}`}
-      header={{ href: '#/', text: 'Navigation' }}
+      activeHref={location.pathname}
+      header={{ href: '/', text: 'Navigation' }}
       items={navigationItems}
+      onFollow={({ detail }) => {
+        if (!detail.external) {
+          navigate(detail.href);
+        }
+      }}
     />
   );
 
   const breadcrumbItems = [
-    { text: 'Home', href: '#/' },
-    ...breadcrumbs.map(b => ({ ...b, href: b.href || '#' })),
+    { text: 'Home', href: '/' },
+    ...breadcrumbs.map(b => ({ ...b, href: b.href || '/' })),
   ];
 
   return (

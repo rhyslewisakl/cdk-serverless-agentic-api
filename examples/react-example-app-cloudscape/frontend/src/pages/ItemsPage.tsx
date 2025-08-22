@@ -44,7 +44,6 @@ export const ItemsPage: React.FC = () => {
   return (
     <AppLayout 
       breadcrumbs={[{ text: 'Items' }]}
-      activeNavItem="items"
     >
       <Container>
         <SpaceBetween direction="vertical" size="l">

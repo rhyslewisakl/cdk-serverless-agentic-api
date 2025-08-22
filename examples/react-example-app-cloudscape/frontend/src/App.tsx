@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from './hooks/redux';
 import { initializeAppAsync } from './store/appSlice';
 import { checkAuthAsync } from './store/authSlice';
 import { PrivateRoute } from './components/PrivateRoute';
-import { DashboardPage } from './pages/DashboardPage';
+import { AppRouter } from './components/routing/AppRouter';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { NotificationProvider } from './components/common/NotificationProvider';
 import { Spinner, Box } from '@cloudscape-design/components';
@@ -35,7 +35,7 @@ const AppContent: React.FC = () => {
   return (
     <>
       <PrivateRoute>
-        <DashboardPage />
+        <AppRouter />
       </PrivateRoute>
       <NotificationProvider />
     </>
