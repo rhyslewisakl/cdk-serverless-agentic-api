@@ -50,22 +50,22 @@ class ApiService {
 
   // Items API methods
   async getItems(): Promise<Item[]> {
-    const response: AxiosResponse<Item[]> = await this.client.get('/items');
+    const response: AxiosResponse<Item[]> = await this.client.get('/api/items');
     return response.data;
   }
 
   async createItem(item: CreateItemRequest): Promise<Item> {
-    const response: AxiosResponse<Item> = await this.client.post('/items', item);
+    const response: AxiosResponse<Item> = await this.client.post('/api/items', item);
     return response.data;
   }
 
   async updateItem(itemId: string, updates: UpdateItemRequest): Promise<Item> {
-    const response: AxiosResponse<Item> = await this.client.put(`/items/${itemId}`, updates);
+    const response: AxiosResponse<Item> = await this.client.put(`/api/items/${itemId}`, updates);
     return response.data;
   }
 
   async deleteItem(itemId: string): Promise<void> {
-    await this.client.delete(`/items/${itemId}`);
+    await this.client.delete(`/api/items/${itemId}`);
   }
 }
 
