@@ -7,4 +7,3 @@
  */
 export { CDKServerlessAgenticAPI } from './cdk-serverless-agentic-api';
 export { CDKServerlessAgenticAPIProps, AddResourceOptions, ResourceConfig, LambdaFunctionEntry } from './types';
-export { SecurityValidationResult, SecurityValidationOptions, SecurityEnforcementOptions } from './security-validation';

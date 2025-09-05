@@ -6,7 +6,6 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { CDKServerlessAgenticAPIProps, AddResourceOptions, LambdaFunctionEntry, ExportableResourceIds } from './types';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { SecurityValidationResult, SecurityValidationOptions, SecurityEnforcementOptions } from './security-validation';
 /**
  * CDK construct that creates a complete serverless web application infrastructure
  * including CloudFront, S3, Cognito, API Gateway, and Lambda functions.
@@ -90,19 +89,6 @@ export declare class CDKServerlessAgenticAPI extends Construct {
     createLambdaFunction(functionName: string, sourcePath: string, environment?: {
         [key: string]: string;
     }, additionalPolicies?: iam.PolicyStatement[]): lambda.Function;
-    /**
-     * Validates the security configuration of the construct
-     *
-     * @param options Security validation options
-     * @returns Array of validation results
-     */
-    validateSecurity(options?: SecurityValidationOptions): SecurityValidationResult[];
-    /**
-     * Enforces security best practices for the construct
-     *
-     * @param options Security enforcement options
-     */
-    enforceSecurityBestPractices(options?: SecurityEnforcementOptions): void;
     /**
      * Gets a Lambda function by path and method
      *

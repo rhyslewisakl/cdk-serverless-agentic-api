@@ -12,7 +12,6 @@ import {
   ExportableResourceIds 
 } from './types';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { validateSecurityConfiguration, SecurityValidationResult, SecurityValidationOptions, SecurityEnforcementOptions, enforceSecurityBestPractices } from './security-validation';
 import { createS3Bucket, createOriginAccessIdentity, configureBucketPolicy, createLoggingBucket } from './s3';
 import { createUserPool } from './cognito';
 import { createApiGateway, createCognitoAuthorizer, createApiGatewayResource, createApiGatewayMethod } from './api-gateway';
@@ -357,29 +356,6 @@ export class CDKServerlessAgenticAPI extends Construct {
     );
   }
 
-  /**
-   * Validates the security configuration of the construct
-   * 
-   * @param options Security validation options
-   * @returns Array of validation results
-   */
-  public validateSecurity(options: SecurityValidationOptions = {}): SecurityValidationResult[] {
-    const defaultOptions: SecurityValidationOptions = {
-      throwOnFailure: false,
-      logResults: true
-    };
-    
-    return validateSecurityConfiguration(this, { ...defaultOptions, ...options });
-  }
-  
-  /**
-   * Enforces security best practices for the construct
-   * 
-   * @param options Security enforcement options
-   */
-  public enforceSecurityBestPractices(options: SecurityEnforcementOptions = {}): void {
-    enforceSecurityBestPractices(this, options);
-  }
 
   /**
    * Gets a Lambda function by path and method

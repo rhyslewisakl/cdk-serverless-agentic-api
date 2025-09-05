@@ -16,10 +16,3 @@ export {
   ResourceConfig,
   LambdaFunctionEntry
 } from './types';
-
-// Export security validation utilities
-export {
-  SecurityValidationResult,
-  SecurityValidationOptions,
-  SecurityEnforcementOptions
-} from './security-validation';
