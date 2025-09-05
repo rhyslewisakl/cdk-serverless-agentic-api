@@ -105,9 +105,6 @@ class AdvancedExampleStack extends Stack {
     productTable.grantReadData(getProductsFunction);
     productTable.grantReadWriteData(createProductFunction);
     productTable.grantReadData(getProductDetailsFunction);
-
-    // Validate security configuration
-    webApp.validateSecurity();
     
     // Outputs
     new CfnOutput(this, 'CloudFrontDomainName', {
